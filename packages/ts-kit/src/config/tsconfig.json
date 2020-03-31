@@ -1,4 +1,3 @@
-const content = `
 {
   "compilerOptions": {
     "noEmit": true,
@@ -10,9 +9,3 @@ const content = `
     "strict": true
   }
 }
-`;
-
-export const config = {
-  filename: "tsconfig.json",
-  content,
-};

@@ -1,15 +1,19 @@
-import { spawn } from "child_process";
-import { setupWorkspace, WORKSPACE_DIR } from "../workspace.js";
+const { spawn } = require("child_process");
+const { getConfigFilepath } = require("../utils");
 
-export const build = async ([...args]) => {
-  await setupWorkspace();
+module.exports.build = async ([...args]) => {
+  return new Promise((resolve, reject) => {
+    const runner = spawn(
+      `yarn`,
+      ["run", "rollup", "--c", getConfigFilepath("rollup.config.js")],
+      {
+        cwd: process.cwd(),
+        stdio: "inherit",
+      }
+    );
 
-  const runner = spawn(`yarn`, ["run", "rollup", "-c"], {
-    cwd: WORKSPACE_DIR,
-    stdio: "inherit"
-  });
-
-  runner.on("close", code => {
-    process.exit(code);
+    runner.on("close", (code) => {
+      code === 0 ? resolve(code) : reject(code);
+    });
   });
 };

@@ -1,20 +1,24 @@
 #!/usr/bin/env node
 
-import { build } from "./commands/build.js";
-import { watch } from "./commands/watch.js";
+const { build } = require("./commands/build");
 
 const [, , command, ...args] = process.argv;
 
-switch (command) {
-  case "build": {
-    build(args);
-    break;
+const run = async () => {
+  try {
+    switch (command) {
+      case "build": {
+        await build(args);
+      }
+      default: {
+        console.warn("Command not found! 🤔");
+        return Promise.resolve();
+      }
+    }
+  } catch (code) {
+    process.exit(code);
   }
-  case "watch": {
-    watch(args);
-    break;
-  }
-  default: {
-    console.warn("Command not found! 🤔");
-  }
-}
+  process.exit(0);
+};
+
+run();

@@ -2,9 +2,8 @@
   "name": "@opsnoir/ts-kit",
   "version": "1.0.0",
   "license": "MIT",
-  "type": "module",
   "bin": {
-    "ts-kit": "./src/cli.js"
+    "ts-kit": "./src/__alt/cli.js"
   },
   "devDependencies": {
     "fs-extra": "^9.0.0",

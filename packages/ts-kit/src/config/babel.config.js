@@ -1,4 +1,3 @@
-const content = `
 module.exports = {
   presets: [
     "@babel/typescript",
@@ -7,19 +6,13 @@ module.exports = {
       {
         useBuiltIns: "usage",
         corejs: { version: 3 },
-        modules: process.env.NODE_ENV === "test"
+        modules: process.env.NODE_ENV === "test",
       },
-    ]
+    ],
   ],
   plugins: [
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-optional-chaining",
   ],
-};
-`;
-
-export const config = {
-  filename: "babel.config.js",
-  content,
 };
