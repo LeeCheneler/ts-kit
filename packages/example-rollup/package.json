@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "ts-kit build",
-    "watch": "ts-kit watch"
+    "typecheck": "ts-kit typecheck"
   },
   "devDependencies": {
     "@opsnoir/ts-kit": "1.0.0"

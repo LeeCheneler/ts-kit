@@ -7,5 +7,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true
-  }
+  },
+  "exclude": ["coverage", "dist", "node_modules", "**/*.test.*"],
+  "include": ["src"]
 }

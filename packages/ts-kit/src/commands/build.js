@@ -5,7 +5,7 @@ module.exports.build = async ([...args]) => {
   return new Promise((resolve, reject) => {
     const runner = spawn(
       `yarn`,
-      ["run", "rollup", "--c", getConfigFilepath("rollup.config.js")],
+      ["run", "rollup", "--config", getConfigFilepath("rollup.config.js")],
       {
         cwd: process.cwd(),
         stdio: "inherit",

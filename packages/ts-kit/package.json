@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "bin": {
-    "ts-kit": "./src/__alt/cli.js"
+    "ts-kit": "./src/cli.js"
   },
   "devDependencies": {
     "fs-extra": "^9.0.0",
@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
     "core-js": "^3.6.4",
+    "glob-promise": "^3.4.0",
     "recursive-readdir": "^2.2.2",
     "regenerator-runtime": "^0.13.5",
     "rollup": "^2.3.0",

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const { build } = require("./commands/build");
+const { typecheck } = require("./commands/typecheck");
 
 const [, , command, ...args] = process.argv;
 
@@ -9,6 +10,11 @@ const run = async () => {
     switch (command) {
       case "build": {
         await build(args);
+        break;
+      }
+      case "typecheck": {
+        await typecheck(args);
+        break;
       }
       default: {
         console.warn("Command not found! 🤔");

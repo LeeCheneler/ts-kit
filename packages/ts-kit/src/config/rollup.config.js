@@ -18,9 +18,6 @@ const extensions = [
   ".json",
 ];
 
-console.log(packageJson.main);
-console.log(path.resolve(process.cwd(), packageJson.main));
-
 module.exports = {
   input: "src/main.ts",
   output: [
