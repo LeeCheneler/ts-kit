@@ -36,6 +36,7 @@ Lints your code using [ESLint](https://eslint.org/).
 
 ```sh
 ts-kit lint
+ts-kit lint --fix
 ```
 
 ## Test
@@ -44,5 +45,18 @@ Runs your unit tests using [Jest](https://jestjs.io/).
 
 ```sh
 ts-kit test
-ts-kit <JEST_OPTIONS>
+ts-kit test --watch
+```
+
+# Configure
+
+If you want to apply any configuration you can provide it in `ts-kit.config.js`.
+
+```js
+module.exports = {
+  build: {},
+  lint: {},
+  test: {},
+  typecheck: {}
+};
 ```
