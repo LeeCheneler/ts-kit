@@ -2,6 +2,7 @@
 
 const { build } = require("./commands/build");
 const { lint } = require("./commands/lint");
+const { test } = require("./commands/test");
 const { typecheck } = require("./commands/typecheck");
 
 const [, , command, ...args] = process.argv;
@@ -15,6 +16,10 @@ const run = async () => {
       }
       case "lint": {
         await lint(args);
+        break;
+      }
+      case "test": {
+        await test(args);
         break;
       }
       case "typecheck": {

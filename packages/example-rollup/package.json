@@ -6,6 +6,7 @@
   "scripts": {
     "build": "ts-kit build",
     "lint": "ts-kit lint",
+    "test": "ts-kit test",
     "typecheck": "ts-kit typecheck"
   },
   "devDependencies": {

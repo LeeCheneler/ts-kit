@@ -46,7 +46,3 @@ Runs your unit tests using [Jest](https://jestjs.io/).
 ts-kit test
 ts-kit <JEST_OPTIONS>
 ```
-
-### Notes
-
-Run jest from node with cli args - `jest.run([...args]);` https://github.com/facebook/jest/issues/5048#issuecomment-408706538
