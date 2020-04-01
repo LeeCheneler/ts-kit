@@ -1,20 +1,52 @@
 # NorthOps TypeScript Kit
 
-# Todo
+Zero config CLI for writing TypeScript packages.
 
-- build with rollup
-  - create workspace
-  - add config to workspace
-  - copy source to workspace
-  - build workspace
+# Getting Started
 
-## notes
+```sh
+yarn add --dev @northops/ts-kit
+# or
+npm i @northops/ts-kit -D
+```
 
-tsc --project path/to/tsconfig.json
+# Usage
 
-rollup --config path/to/rollup.config.js
-rollup babel config has a property configFile: path/to/babel.config.js
+## Build
 
-eslint --config path/to/eslintrc.js
+Builds your code using [Rollup](https://rollupjs.org/).
 
-babel --config-file
+```sh
+ts-kit build
+ts-kit build --watch
+```
+
+## Typecheck
+
+Type checks your code using [TypeScript](https://www.typescriptlang.org/).
+
+```sh
+ts-kit typecheck
+ts-kit typecheck --watch
+```
+
+## Lint
+
+Lints your code using [ESLint](https://eslint.org/).
+
+```sh
+ts-kit lint
+```
+
+## Test
+
+Runs your unit tests using [Jest](https://jestjs.io/).
+
+```sh
+ts-kit test
+ts-kit <JEST_OPTIONS>
+```
+
+### Notes
+
+Run jest from node with cli args - `jest.run([...args]);` https://github.com/facebook/jest/issues/5048#issuecomment-408706538

@@ -4,4 +4,4 @@ const add = (a: number, b: number) => {
   return a + b;
 };
 
-const d: number = add(1, 2);
+export const d: number = add(1, 2);
