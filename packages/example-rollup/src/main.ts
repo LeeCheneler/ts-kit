@@ -1,7 +1,3 @@
-console.log("hello world");
+import { createMessage } from "./message/createMessage";
 
-const subtract = (a: number, b: number) => {
-  return a - b;
-};
-
-export const v: number = subtract(1, 2);
+console.log(createMessage("Lee"));

@@ -1,11 +1,9 @@
 const ts = require("typescript");
 const glob = require("glob-promise");
-const { getSourceFilesGlob, getPackageSourceDirectory } = require("../utils");
+const { getSourceFilepaths } = require("../utils");
 
 module.exports.typecheck = async () => {
-  const fileNames = await glob(getSourceFilesGlob(), {
-    root: getPackageSourceDirectory(),
-  });
+  const fileNames = await getSourceFilepaths();
 
   let program = ts.createProgram(fileNames, {
     noEmit: true,

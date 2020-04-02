@@ -1,12 +1,8 @@
 const eslint = require("eslint");
 const glob = require("glob-promise");
-const { getSourceFilesGlob, getPackageSourceDirectory } = require("../utils");
+const { getSourceFilepaths } = require("../utils");
 
 module.exports.lint = async () => {
-  const fileNames = await glob(getSourceFilesGlob(), {
-    root: getPackageSourceDirectory(),
-  });
-
   const cli = new eslint.CLIEngine({
     useEslintrc: false,
     baseConfig: {
@@ -65,6 +61,7 @@ module.exports.lint = async () => {
     },
   });
 
+  const fileNames = await getSourceFilepaths();
   const report = cli.executeOnFiles(fileNames);
   console.log(report);
 
