@@ -3,11 +3,7 @@ const resolve = require("rollup-plugin-node-resolve");
 const commonjs = require("rollup-plugin-commonjs");
 const babel = require("rollup-plugin-babel");
 const { terser } = require("rollup-plugin-terser");
-const {
-  getPackageJson,
-  getSupportedSourceFileExtensions,
-} = require("../utils");
-const { createBabelConfig } = require("./createBabelConfig");
+const { getPackageJson } = require("../utils");
 
 module.exports.createRollupInputConfig = () => {
   return {
@@ -16,9 +12,13 @@ module.exports.createRollupInputConfig = () => {
       json(),
       commonjs(),
       resolve({
-        extensions: getSupportedSourceFileExtensions(),
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
       }),
-      babel(createBabelConfig()),
+      babel({
+        exclude: "node_modules/**",
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        configFile: require.resolve("./files/babel.config.js"),
+      }),
       terser(),
     ],
     external: getPackageJson().dependencies || [],

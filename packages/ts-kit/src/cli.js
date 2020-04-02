@@ -14,19 +14,19 @@ const run = async () => {
   try {
     switch (command) {
       case "build": {
-        await build(parsedArgs);
+        await build(parsedArgs, rawArgs);
         break;
       }
       case "lint": {
-        await lint(parsedArgs);
+        await lint(parsedArgs, rawArgs);
         break;
       }
       case "test": {
-        await test(parsedArgs);
+        await test(parsedArgs, rawArgs);
         break;
       }
       case "typecheck": {
-        await typecheck(parsedArgs);
+        await typecheck(parsedArgs, rawArgs);
         break;
       }
       default: {
