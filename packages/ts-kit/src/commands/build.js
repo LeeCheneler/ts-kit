@@ -6,84 +6,45 @@ const {
   createRollupOutputConfig,
   createRollupWatchConfig,
 } = require("../config/createRollupConfig");
-
-const logBuildStarted = () => {
-  console.log(`🏗  Running build using ${chalk.blueBright("Rollup")}`);
-};
-
-const logBuildCompleted = () => {
-  console.log("🎉 Build completed");
-};
-
-const logError = (error) => {
-  console.warn("❌ Error occurred during build, see below:");
-  console.log(
-    chalk.red(
-      "================================================================================"
-    )
-  );
-  console.error(error);
-  console.log(
-    chalk.red(
-      "================================================================================"
-    )
-  );
-};
-
-const logWritingOutput = () => {
-  console.log(
-    `✏️  Writing output to ${chalk.greenBright(
-      createRollupOutputConfig().file
-    )}`
-  );
-};
-
-const logWatchingForChanges = () => {
-  console.log(
-    `👀  Watching ${chalk.green(
-      createRollupWatchConfig().input
-    )} and dependency tree for changes...`
-  );
-};
+const { writePaddedLog, writeLog, colors } = require("../logging");
 
 module.exports.build = async (parsedArgs, rawArgs) => {
-  logBuildStarted();
-  try {
-    if (parsedArgs.w === true || parsedArgs.watch === true) {
-      const watcher = rollup.watch(createRollupWatchConfig());
-      return new Promise((resolve, reject) => {
-        watcher.on("event", (event) => {
-          switch (event.code) {
-            case "START": {
-              logWritingOutput();
-              break;
-            }
-            case "END": {
-              logWatchingForChanges();
-              break;
-            }
-            case "ERROR": {
-              logError(event.error);
-              watcher.close();
-              break;
-            }
-            default: {
-              break;
-            }
-          }
-        });
-      });
-    } else {
-      const bundle = await rollup.rollup(createRollupInputConfig());
-      logWritingOutput();
-      const result = await bundle.write(createRollupOutputConfig());
-    }
-  } catch (error) {
-    logError(error);
+  writeLog(`Building with ${chalk.blueBright("Rollup")}`);
 
-    return Promise.reject();
+  if (parsedArgs.w === true || parsedArgs.watch === true) {
+    const watchConfig = createRollupWatchConfig();
+    const watcher = rollup.watch(watchConfig);
+    return new Promise((resolve, reject) => {
+      watcher.on("event", (event) => {
+        switch (event.code) {
+          case "START": {
+            writeLog(
+              `Writing output to ${colors.filepath(watchConfig.output.file)}`
+            );
+            break;
+          }
+          case "END": {
+            writeLog(colors.watching("Watching for changes..."));
+            break;
+          }
+          case "ERROR": {
+            logError(event.error);
+            watcher.close();
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      });
+    });
+  } else {
+    const inputConfig = createRollupInputConfig();
+    const outputConfig = createRollupOutputConfig();
+    const bundle = await rollup.rollup(inputConfig);
+    writeLog(`Writing output to ${colors.filepath(outputConfig.file)}`);
+    const result = await bundle.write(outputConfig);
   }
 
-  logBuildCompleted();
   return Promise.resolve();
 };

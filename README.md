@@ -17,8 +17,12 @@ npm i @northops/ts-kit -D
 Builds your code using [Rollup](https://rollupjs.org/).
 
 ```sh
+# Single build
 ts-kit build
+
+# Build and watch for changed
 ts-kit build --watch
+ts-kit build -w
 ```
 
 ## Typecheck
@@ -26,8 +30,11 @@ ts-kit build --watch
 Type checks your code using [TypeScript](https://www.typescriptlang.org/).
 
 ```sh
+# Check types only
 ts-kit typecheck
-ts-kit typecheck --watch
+
+# Check types and emit type declaration files
+ts-kit typecheck --emit
 ```
 
 ## Lint
@@ -44,19 +51,9 @@ ts-kit lint --fix
 Runs your unit tests using [Jest](https://jestjs.io/).
 
 ```sh
+# Run tests once
 ts-kit test
-ts-kit test --watch
-```
 
-# Configure
-
-If you want to apply any configuration you can provide it in `ts-kit.config.js`.
-
-```js
-module.exports = {
-  build: {},
-  lint: {},
-  test: {},
-  typecheck: {}
-};
+# All args EXCEPT for --config are forward onto jest
+ts-kit test <jest_cli_args>
 ```
