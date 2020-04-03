@@ -4,10 +4,20 @@ Zero config CLI for writing TypeScript packages.
 
 # Getting Started
 
+Install the package...
+
 ```sh
 yarn add --dev @northops/ts-kit
 # or
 npm i @northops/ts-kit -D
+```
+
+... and make sure the entry file exists at `src/main.ts`
+
+```
+// src/main.ts
+
+console.log("Hello world!")
 ```
 
 # Usage
