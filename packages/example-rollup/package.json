@@ -10,6 +10,6 @@
     "typecheck": "ts-kit typecheck"
   },
   "devDependencies": {
-    "@opsnoir/ts-kit": "1.0.0"
+    "@northops/ts-kit": "1.0.0"
   }
 }

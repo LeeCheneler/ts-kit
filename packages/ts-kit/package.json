@@ -1,5 +1,5 @@
 {
-  "name": "@opsnoir/ts-kit",
+  "name": "@northops/ts-kit",
   "version": "1.0.0",
   "license": "MIT",
   "bin": {
