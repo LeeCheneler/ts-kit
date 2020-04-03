@@ -4,8 +4,9 @@ const { getSourceFilepaths } = require("../utils");
 const { writePaddedLog, writeLog, colors } = require("../logging");
 const { createESLintConfig } = require("../config/createESLintConfig");
 
-module.exports.lint = async () => {
+module.exports.lint = async (parsedArgs) => {
   const cli = new eslint.CLIEngine({
+    fix: parsedArgs.fix === true,
     useEslintrc: false,
     baseConfig: createESLintConfig(),
   });
@@ -39,6 +40,12 @@ module.exports.lint = async () => {
             : colors.warning(`Warning (${m.line}:${m.column})`);
         return `${prefix} ${m.message}`;
       })
+    );
+  }
+
+  if (report.fixableErrorCount > 0 || report.fixableWarningCount > 0) {
+    writePaddedLog(
+      `Run again with ${colors.tool("--fix")} to fix fixable issues`
     );
   }
 

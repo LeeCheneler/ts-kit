@@ -20,7 +20,7 @@ Builds your code using [Rollup](https://rollupjs.org/).
 # Single build
 ts-kit build
 
-# Build and watch for changed
+# Build and watch for changes
 ts-kit build --watch
 ts-kit build -w
 ```
