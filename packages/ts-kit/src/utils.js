@@ -6,7 +6,7 @@ module.exports.getPackageSourceDirectory = () => {
 };
 
 module.exports.getSourceFilepaths = async () => {
-  return glob("**/src/*.{js,jsx,ts,tsx}", {
+  return glob("src/**/*.{js,jsx,ts,tsx}", {
     root: path.resolve(module.exports.getPackageSourceDirectory()),
   });
 };

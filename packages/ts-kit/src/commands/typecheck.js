@@ -2,7 +2,12 @@ const ts = require("typescript");
 const glob = require("glob-promise");
 const { getSourceFilepaths } = require("../utils");
 const { createTypeScriptConfig } = require("../config/createTypeScriptConfig");
-const { colors, writePaddedLog, writeErrorLog } = require("../logging");
+const {
+  colors,
+  writePaddedLog,
+  writeErrorLog,
+  writeLog,
+} = require("../logging");
 
 module.exports.typecheck = async (parsedArgs, rawArgs) => {
   writePaddedLog(`Checking types with ${colors.tool("TypeScript")}`);
@@ -22,28 +27,52 @@ module.exports.typecheck = async (parsedArgs, rawArgs) => {
     .concat(emitResult.diagnostics);
 
   if (allDiagnostics.length > 0) {
-    const diagnosticMessages = allDiagnostics.map((diagnostic) => {
-      if (diagnostic.file) {
-        let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-          diagnostic.start
-        );
-        let message = ts.flattenDiagnosticMessageText(
-          diagnostic.messageText,
-          "\n"
-        );
+    writePaddedLog(`Found ${colors.error(allDiagnostics.length)} type errors:`);
 
-        return `${colors.filepath(
-          `${diagnostic.file.fileName} (${line + 1},${character + 1})`
-        )}: ${message}`;
-      } else {
-        return ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n", 2);
-      }
-    });
+    const composedDiagnostics = allDiagnostics.reduce(
+      (acc, next) => {
+        if (next.file) {
+          let { line, character } = next.file.getLineAndCharacterOfPosition(
+            next.start
+          );
+          let message = ts.flattenDiagnosticMessageText(next.messageText, "\n");
 
-    writePaddedLog(
-      `Found ${colors.warning(diagnosticMessages.length)} type issues:`
+          const composedMessage = `${colors.error(
+            `(${line + 1},${character + 1})`
+          )}: ${message}`;
+
+          const existingFileDiagnostics = acc.fileDiagnostics.find(
+            (d) => d.fileName === next.file.fileName
+          );
+          if (existingFileDiagnostics) {
+            existingFileDiagnostics.messages.push(composedMessage);
+          } else {
+            acc.fileDiagnostics.push({
+              fileName: next.file.fileName,
+              messages: [composedMessage],
+            });
+          }
+        } else {
+          acc.generalDiagnostics.push(
+            ts.flattenDiagnosticMessageText(next.messageText, "\n")
+          );
+        }
+
+        return acc;
+      },
+      { fileDiagnostics: [], generalDiagnostics: [] }
     );
-    writePaddedLog(diagnosticMessages, console.warn);
+
+    if (composedDiagnostics.fileDiagnostics.length > 0) {
+      for (let fileDiagnostic of composedDiagnostics.fileDiagnostics) {
+        writeLog(colors.filepath(fileDiagnostic.fileName));
+        writePaddedLog(fileDiagnostic.messages);
+      }
+    }
+
+    if (composedDiagnostics.generalDiagnostics.length > 0) {
+      writePaddedLog(composedDiagnostics.generalDiagnostics);
+    }
   }
 
   if (
@@ -54,7 +83,7 @@ module.exports.typecheck = async (parsedArgs, rawArgs) => {
     return Promise.reject({ silentExit: true });
   }
 
-  writePaddedLog(`Found ${colors.warning("0")} type issues`);
+  writePaddedLog("Found no issues");
 
   // There were no type issues
   return Promise.resolve();

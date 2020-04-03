@@ -1,74 +1,45 @@
 const eslint = require("eslint");
 const glob = require("glob-promise");
 const { getSourceFilepaths } = require("../utils");
+const { writePaddedLog, writeLog, colors } = require("../logging");
+const { createESLintConfig } = require("../config/createESLintConfig");
 
 module.exports.lint = async () => {
   const cli = new eslint.CLIEngine({
     useEslintrc: false,
-    baseConfig: {
-      env: {
-        browser: true,
-        jest: true,
-        node: true,
-        serviceworker: true,
-      },
-      extends: [
-        "eslint:recommended",
-        "plugin:prettier/recommended",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:jest/recommended",
-      ],
-      globals: {
-        console: "readonly",
-        document: "readonly",
-        fetch: "readonly",
-        module: "writable",
-        window: "readonly",
-      },
-      parser: "@typescript-eslint/parser",
-      parserOptions: {
-        jsx: true,
-        sourceType: "module",
-      },
-      plugins: ["prettier", "@typescript-eslint", "import", "jest"],
-      rules: {
-        "prettier/prettier": "error",
-        "no-var": "error",
-        "@typescript-eslint/no-unused-vars": "error",
-        // Safe to disable the following rules as TSC will throw, ESLint doesn't understand interfaces properly,
-        // https://github.com/eslint/typescript-eslint-parser/issues/437
-        "no-undef": "off",
-        "no-unused-vars": "off",
-        "import/named": "off",
-      },
-      settings: {
-        "import/resolver": {
-          node: {
-            extensions: [
-              ".js",
-              ".jsx",
-              ".ts",
-              ".tsx",
-              ".json",
-              ".es6",
-              "mjs",
-              ".cjs",
-            ],
-          },
-        },
-      },
-    },
+    baseConfig: createESLintConfig(),
   });
 
   const fileNames = await getSourceFilepaths();
   const report = cli.executeOnFiles(fileNames);
-  console.log(report);
 
-  for (let file of report.results) {
-    for (message of file.messages) {
-      console.log(message);
-    }
+  writePaddedLog(`Linting with ${colors.tool("ESLint")}`);
+
+  if (report.errorCount > 0 || report.warningCount > 0) {
+    writePaddedLog(
+      `Found ${colors.error(
+        `${report.errorCount} errors (${report.fixableErrorCount} fixable)`
+      )} and ${colors.warning(
+        `${report.warningCount} warnings (${report.fixableWarningCount} fixable)`
+      )}:`
+    );
+  } else {
+    writePaddedLog("Found no issues");
+  }
+
+  for (let file of report.results.filter(
+    (r) => r.errorCount + r.warningCount > 0
+  )) {
+    writeLog(`${colors.filepath(file.filePath)}:`);
+    writePaddedLog(
+      file.messages.map((m) => {
+        const prefix =
+          m.severity === 2
+            ? colors.error(`Error (${m.line}:${m.column})`)
+            : colors.warning(`Warning (${m.line}:${m.column})`);
+        return `${prefix} ${m.message}`;
+      })
+    );
   }
 
   return Promise.resolve();
