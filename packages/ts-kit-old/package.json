@@ -1,16 +1,9 @@
 {
-  "name": "@northops/ts-kit",
+  "name": "@northops/ts-kit-old",
   "version": "1.0.0",
-  "description": "Zero config CLI for writing TypeScript packages.",
-  "repository": {
-    "url": "https://github.com/northops/ts-kit"
-  },
   "license": "MIT",
   "bin": {
-    "ts-kit": "./src/bin.js"
-  },
-  "scripts": {
-    "test": "jest"
+    "ts-kit-old": "./src/cli.js"
   },
   "devDependencies": {
     "fs-extra": "^9.0.0",
@@ -25,8 +18,6 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^25.1.4",
-    "@types/minimist": "^1.2.0",
-    "@types/node": "^13.11.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "chalk": "^4.0.0",
@@ -48,7 +39,6 @@
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.3.0",
-    "ts-node": "^8.8.2",
     "typescript": "^3.8.3"
   }
 }
