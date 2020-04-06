@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-require("ts-node").register();
+require("ts-node").register(require("../tsconfig.json"));
 
 const cli = require("./cli");
 

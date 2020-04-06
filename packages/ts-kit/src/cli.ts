@@ -1,28 +1,22 @@
-import parseArgs from "minimist";
 import chalk from "chalk";
-import type { CliArgs } from "./types";
-import { getToolPackageJson } from "./utils/packageJson";
+import type { Command } from "./types";
+import { getToolPackageJson } from "./utils/tool-package";
 import { print, printError } from "./utils/print";
+import { test } from "./commands/test-command";
 
-export const run = (): Promise<void> => {
-  const [, , command, ...args] = process.argv;
-  const parsedArgs = parseArgs<CliArgs>(args);
+export const run = async (): Promise<void> => {
+  const [, , commandName, ...args] = process.argv;
   const toolPackageJson = getToolPackageJson();
-  const commands = {};
+  const commands: Command<unknown>[] = [test];
 
-  if (parsedArgs["disable-colors"]) {
-    // Disable chalk colors, useful for tests and some CI envs
-    chalk.level = 0;
-  }
-
-  if (["--version", "-v"].includes(command)) {
+  if (["--version", "-v"].includes(commandName)) {
     // Handle top level tool options
     print(toolPackageJson.version);
 
     return Promise.resolve();
   }
 
-  if (["--help", "-h"].includes(command)) {
+  if (["--help", "-h"].includes(commandName)) {
     // Print out helpful infomation
     print(
       `${toolPackageJson.name} (${chalk.blueBright(
@@ -41,9 +35,10 @@ export const run = (): Promise<void> => {
     return Promise.resolve();
   }
 
-  if (!Object.keys(commands).includes(command)) {
+  const command = commands.find((c) => c.name === commandName);
+  if (!command) {
     // Notify command doesn't exist via stderr logs
-    printError(`Command '${command}' does not exist`);
+    printError(`Command '${commandName}' does not exist`);
     print();
 
     printError("Run 'ts-kit --help' to see available commands");
@@ -53,5 +48,6 @@ export const run = (): Promise<void> => {
     return Promise.reject();
   }
 
-  return Promise.resolve();
+  // Run the command
+  return command.run(args);
 };

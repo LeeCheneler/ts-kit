@@ -8,15 +8,21 @@ export interface RunTsKitResult {
   stdoutLines: string[];
 }
 
-export const runTsKit = (commandAndArgs: string): RunTsKitResult => {
+export interface RunTsKitOptions {
+  cwd?: string;
+}
+
+export const runTsKit = (
+  commandAndArgs: string,
+  options: RunTsKitOptions = {
+    cwd: process.cwd(),
+  }
+): RunTsKitResult => {
   const processedArgs = commandAndArgs.split(" ").filter((a) => a !== "");
-  const result = spawnSync(
-    "yarn",
-    ["run", "ts-kit", ...processedArgs, "--disable-colors"],
-    {
-      encoding: "utf8",
-    }
-  );
+  const result = spawnSync("yarn", ["run", "ts-kit", ...processedArgs], {
+    encoding: "utf8",
+    cwd: options.cwd,
+  });
 
   return {
     status: result.status,

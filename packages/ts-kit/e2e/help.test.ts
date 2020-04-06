@@ -1,5 +1,5 @@
 import { runTsKit } from "./utils/run";
-import { getToolPackageJson } from "../src/utils/packageJson";
+import { getToolPackageJson } from "../src/utils/tool-package";
 
 describe("help option", () => {
   const toolPackageJson = getToolPackageJson();
