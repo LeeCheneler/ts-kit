@@ -5,7 +5,7 @@ describe("help option", () => {
   const toolPackageJson = getToolPackageJson();
 
   ["--help", "-h"].forEach((option) => {
-    it("should print basic tool info", () => {
+    it(`should print basic tool info (${option})`, () => {
       const result = runTsKit(option);
 
       expect(result.status).toBe(0);
@@ -24,6 +24,6 @@ describe("help option", () => {
       expect(result.stdoutLines).toContain("Print version.");
     });
 
-    it.skip("should print command info", () => {});
+    it.skip(`should print command info (${option})`, () => {});
   });
 });

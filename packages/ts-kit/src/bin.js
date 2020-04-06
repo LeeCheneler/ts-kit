@@ -4,4 +4,4 @@ require("ts-node").register();
 
 const cli = require("./cli");
 
-cli.run();
+cli.run().catch(() => process.exit(1));
