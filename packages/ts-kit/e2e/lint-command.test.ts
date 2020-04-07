@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs-extra";
 import { runTsKit } from "./utils/run";
 import {
   createPackage,
@@ -82,5 +84,25 @@ describe("lint command", () => {
     expect(result.stderrLines).toContain(
       "Rerun with --fix to fix fixable issues"
     );
+  });
+
+  it("fixes autofixable lint issues when --fix is present", async () => {
+    const packageDir = await getPackageDir("@temp/lint-command");
+    await createPackage({
+      name: "@temp/lint-command",
+      fixableLinting: true,
+    });
+    const result = runTsKit("lint --fix", {
+      cwd: packageDir,
+    });
+
+    expect(result.status).toBe(0);
+    expect(
+      fs.readFileSync(path.resolve(packageDir, "src/fixable-linting.ts"), {
+        encoding: "utf8",
+      })
+    ).toBe(`let a = 1;
+console.log(a);
+`);
   });
 });

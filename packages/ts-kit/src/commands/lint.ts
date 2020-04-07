@@ -1,3 +1,4 @@
+import fs from "fs-extra";
 import eslint from "eslint";
 import chalk from "chalk";
 import type { Command } from "../types";
@@ -81,7 +82,7 @@ export interface LintCommandOptions {
 
 export const lint: Command<LintCommandOptions> = {
   name: "lint",
-  description: `Linting with ${chalk.blueBright("ESLint")}`,
+  description: `Lint with ${chalk.blueBright("ESLint")}`,
   options,
   run: async (args: string[]) => {
     const parsedOptions = argsToOptions<LintOptions>(args, options);
@@ -99,6 +100,15 @@ export const lint: Command<LintCommandOptions> = {
     });
 
     const report = cli.executeOnFiles(consumerPackage.srcFilepaths);
+
+    if (parsedOptions.fix) {
+      // Immediately write fixes to file
+      const files = report.results.filter((r) => r.output);
+
+      for (const file of files) {
+        await fs.writeFile(file.filePath, file.output, { encoding: "utf8" });
+      }
+    }
 
     if (report.errorCount === 0 && report.warningCount === 0) {
       // Early escape if there are no issues found
