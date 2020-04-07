@@ -4,4 +4,7 @@ require("ts-node").register(require("../tsconfig.json"));
 
 const cli = require("./cli");
 
-cli.run().catch(() => process.exit(1));
+cli
+  .run()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

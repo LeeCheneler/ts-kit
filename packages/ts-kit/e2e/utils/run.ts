@@ -1,4 +1,5 @@
 import { spawnSync } from "child_process";
+import stripAnsi from "strip-ansi";
 
 export interface RunTsKitResult {
   status: number;
@@ -26,9 +27,9 @@ export const runTsKit = (
 
   return {
     status: result.status,
-    stderr: result.stderr,
-    stderrLines: result.stderr.split("\n"),
-    stdout: result.stdout,
-    stdoutLines: result.stdout.split("\n"),
+    stderr: stripAnsi(result.stderr) ?? "",
+    stderrLines: (stripAnsi(result.stderr) ?? "").split("\n"),
+    stdout: stripAnsi(result.stdout) ?? "",
+    stdoutLines: (stripAnsi(result.stdout) ?? "").split("\n"),
   };
 };

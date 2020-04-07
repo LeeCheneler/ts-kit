@@ -1,34 +1,35 @@
 import chalk from "chalk";
 import type { Command } from "./types";
-import { getToolPackageJson } from "./utils/tool-package";
+import { getToolPackage } from "./utils/package";
 import { print, printError } from "./utils/print";
-import { test } from "./commands/test-command";
+import { lint } from "./commands/lint";
+import { test } from "./commands/_test";
 
 export const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
-  const toolPackageJson = getToolPackageJson();
-  const commands: Command<unknown>[] = [test];
+  const toolPackage = await getToolPackage();
+  const commands: Command<unknown>[] = [test, lint];
 
-  if (["--version", "-v"].includes(commandName)) {
+  if (commandName === "--version") {
     // Handle top level tool options
-    print(toolPackageJson.version);
+    print(toolPackage.json.version);
 
     return Promise.resolve();
   }
 
-  if (["--help", "-h"].includes(commandName)) {
+  if (commandName == "--help") {
     // Print out helpful infomation
     print(
-      `${toolPackageJson.name} (${chalk.blueBright(
-        toolPackageJson.repository.url
+      `${toolPackage.json.name} (${chalk.blueBright(
+        toolPackage.json.repository.url
       )})`
     );
     print();
 
-    print(toolPackageJson.description);
+    print(toolPackage.json.description);
     print();
 
-    print(chalk.bold("--version, -v"));
+    print(chalk.bold("--version"));
     print("Print version.");
     print();
 

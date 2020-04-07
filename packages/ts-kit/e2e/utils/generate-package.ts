@@ -1,33 +1,41 @@
 import path from "path";
 import fs from "fs-extra";
 import { spawnSync } from "child_process";
-import {
-  getToolPackageDir,
-  getToolPackageJson,
-} from "../../src/utils/tool-package";
+import { getToolPackage } from "../../src/utils/package";
 
 export interface CreatePackageOptions {
   name: string;
-  testSuite: boolean;
+  testSuite?: boolean;
+  fixableLinting?: boolean;
+  unfixableLinting?: boolean;
 }
 
-export const getPackageDir = (name: string): string => {
-  return path.resolve(getToolPackageDir(), "..", name);
+export const getPackageDir = async (name: string): Promise<string> => {
+  return path.resolve((await getToolPackage()).dir, "..", name);
 };
 
 export const createPackage = async (
   options: CreatePackageOptions
 ): Promise<void> => {
-  // Create the package directory
-  const packageDir = getPackageDir(options.name);
+  const finalOptions = {
+    testSuite: false,
+    fixableLinting: false,
+    passLinting: true,
+    unfixableLinting: false,
+    ...options,
+  };
+
+  // Create the package directory and src directory
+  const packageDir = await getPackageDir(finalOptions.name);
   await fs.ensureDir(packageDir);
+  await fs.ensureDir(path.resolve(packageDir, "src"));
 
   // Write package.json file
-  const toolPackageJson = getToolPackageJson();
+  const toolPackageJson = (await getToolPackage()).json;
   await fs.writeJSON(
     path.resolve(packageDir, "package.json"),
     {
-      name: options.name,
+      name: finalOptions.name,
       version: "1.0.0",
       license: "MIT",
       devDependencies: JSON.parse(
@@ -38,17 +46,37 @@ export const createPackage = async (
   );
 
   // Install dependencies
-  spawnSync("yarn", { cwd: packageDir });
+  spawnSync("yarn", { cwd: packageDir, encoding: "utf8" });
 
-  if (options.testSuite) {
+  if (finalOptions.testSuite) {
     // Create test suite
     await fs.writeFile(
-      path.resolve(packageDir, "example.test.ts"),
+      path.resolve(packageDir, "src/example.test.ts"),
       "it('should pass', () => { expect(1 + 2).toBe(3) });"
+    );
+  }
+
+  if (finalOptions.unfixableLinting) {
+    // Write a malformed file that eslint cannot fix
+    await fs.writeFile(
+      path.resolve(packageDir, "src/unfixable-linting.ts"),
+      `export const fn = () => {
+  return;
+  console.log("hello world");
+};
+`
+    );
+  }
+
+  if (finalOptions.fixableLinting) {
+    // Write a malformed file that eslint can fix
+    await fs.writeFile(
+      path.resolve(packageDir, "src/fixable-linting.ts"),
+      "var a = 1; console.log(a)"
     );
   }
 };
 
 export const destroyPackage = async (name: string): Promise<void> => {
-  await fs.remove(getPackageDir(name));
+  await fs.remove(await getPackageDir(name));
 };

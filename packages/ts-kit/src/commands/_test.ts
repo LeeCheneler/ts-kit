@@ -26,6 +26,10 @@ export const test: Command<TestCommandOptions> = {
     process.env.BABEL_ENV = "test";
     process.env.NODE_ENV = "test";
 
-    require("jest").run([...args, "--config", JSON.stringify(createConfig())]);
+    return require("jest").run([
+      ...args,
+      "--config",
+      JSON.stringify(createConfig()),
+    ]);
   },
 };

@@ -2,7 +2,7 @@ import minimist from "minimist";
 import type { ParsedArgs } from "minimist";
 import chalk from "chalk";
 import type { Option } from "../types";
-import { printError } from "./print";
+import { print, printError } from "./print";
 
 export const argsToOptions = <TOptions>(
   args: string[],
@@ -15,8 +15,9 @@ export const argsToOptions = <TOptions>(
       // @ts-ignore - can trust this assignment
       parsedOptions[option.name] = option.parse(parsedOptions[option.name]);
     } else if (option.isRequired) {
-      const missingOptionErrorMessage = `Missing required option '${option.name}'`;
+      const missingOptionErrorMessage = `Missing required option '--${option.name}'`;
       printError(chalk.redBright(missingOptionErrorMessage));
+      print();
       throw new Error(missingOptionErrorMessage);
     } else if (option.defaultValue) {
       // @ts-ignore - can trust this assignment
@@ -25,4 +26,20 @@ export const argsToOptions = <TOptions>(
   }
 
   return parsedOptions;
+};
+
+export interface CreateOptionOptions<TType> {
+  name: string;
+  description: string;
+  isRequired: boolean;
+  defaultValue: TType;
+}
+
+export const createBooleanOption = (
+  options: CreateOptionOptions<boolean>
+): Option<boolean> => {
+  return {
+    ...options,
+    parse: (value: string) => value !== "false",
+  };
 };
