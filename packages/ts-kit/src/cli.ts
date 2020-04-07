@@ -2,13 +2,14 @@ import chalk from "chalk";
 import type { Command } from "./types";
 import { getToolPackage } from "./utils/package";
 import { print, printError } from "./utils/print";
+import { build } from "./commands/build";
 import { lint } from "./commands/lint";
 import { test } from "./commands/_test";
 
 export const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
   const toolPackage = await getToolPackage();
-  const commands: Command<unknown>[] = [test, lint];
+  const commands: Command<unknown>[] = [build, lint, test];
 
   if (commandName === "--version") {
     // Handle top level tool options

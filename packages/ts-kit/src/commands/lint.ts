@@ -72,10 +72,6 @@ const options = [
   }),
 ];
 
-interface LintOptions {
-  fix: boolean;
-}
-
 export interface LintCommandOptions {
   fix: boolean;
 }
@@ -85,7 +81,7 @@ export const lint: Command<LintCommandOptions> = {
   description: `Lint with ${chalk.blueBright("ESLint")}`,
   options,
   run: async (args: string[]) => {
-    const parsedOptions = argsToOptions<LintOptions>(args, options);
+    const parsedOptions = argsToOptions<LintCommandOptions>(args, options);
 
     // Announce tool
     print(`Linting with ${chalk.blueBright("ESLint")}`);

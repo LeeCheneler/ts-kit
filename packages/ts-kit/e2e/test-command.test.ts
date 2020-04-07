@@ -27,7 +27,6 @@ describe("test command", () => {
     expect(result.stdoutLines).toContain("Running tests with Jest");
 
     // Jest outputs everything to stderr, always has for some reason
-    expect(result.stderrLines).toContain(" PASS  src/example.test.ts");
     expect(result.stderrLines).toContain("Test Suites: 1 passed, 1 total");
     expect(result.stderrLines).toContain("Ran all test suites.");
   });

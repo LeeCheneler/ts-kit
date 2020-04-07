@@ -8,6 +8,9 @@ export interface PackageJson {
     url: string;
   };
   version: string;
+  dependencies?: {
+    [key: string]: string;
+  };
 }
 
 export interface Package {

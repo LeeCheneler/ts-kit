@@ -8,6 +8,7 @@ export interface CreatePackageOptions {
   testSuite?: boolean;
   fixableLinting?: boolean;
   unfixableLinting?: boolean;
+  mainSrc?: boolean;
 }
 
 export const getPackageDir = async (name: string): Promise<string> => {
@@ -22,6 +23,7 @@ export const createPackage = async (
     fixableLinting: false,
     passLinting: true,
     unfixableLinting: false,
+    mainSrc: false,
     ...options,
   };
 
@@ -48,8 +50,16 @@ export const createPackage = async (
   // Install dependencies
   spawnSync("yarn", { cwd: packageDir, encoding: "utf8" });
 
+  if (finalOptions.mainSrc) {
+    // Write simplest, compilable file
+    await fs.writeFile(
+      path.resolve(packageDir, "src/main.ts"),
+      'console.log("Hello world");'
+    );
+  }
+
   if (finalOptions.testSuite) {
-    // Create test suite
+    // Write test file
     await fs.writeFile(
       path.resolve(packageDir, "src/example.test.ts"),
       "it('should pass', () => { expect(1 + 2).toBe(3) });"
