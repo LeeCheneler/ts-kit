@@ -9,6 +9,8 @@ export interface CreatePackageOptions {
   fixableLinting?: boolean;
   unfixableLinting?: boolean;
   mainSrc?: boolean;
+  validTypes?: boolean;
+  invalidTypes?: boolean;
 }
 
 export const getPackageDir = async (name: string): Promise<string> => {
@@ -24,6 +26,7 @@ export const createPackage = async (
     passLinting: true,
     unfixableLinting: false,
     mainSrc: false,
+    validtypes: false,
     ...options,
   };
 
@@ -83,6 +86,22 @@ export const createPackage = async (
     await fs.writeFile(
       path.resolve(packageDir, "src/fixable-linting.ts"),
       "var a = 1; console.log(a)"
+    );
+  }
+
+  if (finalOptions.validTypes) {
+    // Write a file with valid types
+    await fs.writeFile(
+      path.resolve(packageDir, "src/valid-types.ts"),
+      "export const add = (a: number, b: number): number => a + b;"
+    );
+  }
+
+  if (finalOptions.invalidTypes) {
+    // Write a file with valid types
+    await fs.writeFile(
+      path.resolve(packageDir, "src/valid-types.ts"),
+      "export const add = (a: number, b: string): number => a + b;"
     );
   }
 };

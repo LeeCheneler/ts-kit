@@ -29,18 +29,6 @@ describe("lint command", () => {
     expect(result.stdoutLines).toContain("No issues found");
   });
 
-  it("forwards eslint's status code", async () => {
-    await createPackage({
-      name: "@temp/lint-command",
-      fixableLinting: true,
-    });
-    const result = runTsKit("lint", {
-      cwd: await getPackageDir("@temp/lint-command"),
-    });
-
-    expect(result.status).toBe(1);
-  });
-
   it("lints unfixable issues and does not present auto fix option", async () => {
     await createPackage({
       name: "@temp/lint-command",

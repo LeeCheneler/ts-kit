@@ -5,11 +5,12 @@ import { print, printError } from "./utils/print";
 import { build } from "./commands/build";
 import { lint } from "./commands/lint";
 import { test } from "./commands/_test";
+import { typecheck } from "./commands/typecheck";
 
 export const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
   const toolPackage = await getToolPackage();
-  const commands: Command<unknown>[] = [build, lint, test];
+  const commands: Command<unknown>[] = [build, lint, test, typecheck];
 
   if (commandName === "--version") {
     // Handle top level tool options

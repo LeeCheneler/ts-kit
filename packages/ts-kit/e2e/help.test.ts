@@ -2,7 +2,7 @@ import { runTsKit } from "./utils/run";
 import { getToolPackage } from "../src/utils/package";
 
 describe("help option", () => {
-  it(`should print basic tool info`, async () => {
+  it("should print basic tool info", async () => {
     const toolPackage = await getToolPackage();
     const result = runTsKit("--help");
 
