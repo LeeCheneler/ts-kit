@@ -8,8 +8,6 @@ Install the package...
 
 ```sh
 yarn add --dev @leecheneler/ts-kit
-# or
-npm i @leecheneler/ts-kit -D
 ```
 
 ... and make sure the entry file exists at `src/main.ts`
@@ -32,7 +30,6 @@ ts-kit build
 
 # Build and watch for changes
 ts-kit build --watch
-ts-kit build -w
 ```
 
 ## Typecheck
