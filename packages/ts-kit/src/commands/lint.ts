@@ -43,6 +43,9 @@ const createConfig = () => {
       "no-undef": "off",
       "no-unused-vars": "off",
       "import/named": "off",
+      "import/no-unresolved": "off",
+      // Advanced users are fine importing jest
+      "jest/no-jest-import": "off",
     },
     settings: {
       "import/resolver": {
@@ -93,6 +96,7 @@ export const lint: Command<LintCommandOptions> = {
       fix: parsedOptions.fix,
       useEslintrc: false,
       baseConfig: createConfig(),
+      cwd: consumerPackage.dir,
     });
 
     const report = cli.executeOnFiles(consumerPackage.srcFilepaths);
@@ -144,7 +148,9 @@ export const lint: Command<LintCommandOptions> = {
             ? chalk.redBright(`Error (${message.line}:${message.column})`)
             : chalk.yellowBright(`Warning (${message.line}:${message.column})`);
 
-        printError(`${prefix} ${message.message}`);
+        printError(
+          `${prefix} ${message.message} (${chalk.grey(message.ruleId)})`
+        );
       }
 
       printError();

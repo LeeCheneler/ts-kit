@@ -19,6 +19,7 @@ const createConfig = (
     skipLibCheck: true,
     strict: true,
     outDir: "dist",
+    allowJs: true,
     ...mergeConfig,
   };
 };

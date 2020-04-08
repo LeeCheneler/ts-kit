@@ -10,11 +10,9 @@
     "ts-kit": "./src/bin.js"
   },
   "scripts": {
-    "test": "jest --runInBand"
-  },
-  "devDependencies": {
-    "fs-extra": "^9.0.0",
-    "prettier": "^2.0.2"
+    "lint": "ts-kit lint",
+    "test": "ts-kit test --runInBand --testTimeout=20000",
+    "typecheck": "ts-kit typecheck"
   },
   "dependencies": {
     "@babel/cli": "^7.8.4",
