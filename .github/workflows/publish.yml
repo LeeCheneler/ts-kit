@@ -33,4 +33,4 @@ jobs:
         working-directory: packages/ts-kit
         run: |
           npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
-          npm publish --tag commit
+          npm publish --tag commit --access public
