@@ -2,6 +2,7 @@
   "name": "example-package",
   "version": "1.0.0",
   "license": "MIT",
+  "private": true,
   "main": "dist/main.js",
   "scripts": {
     "build": "ts-kit build",

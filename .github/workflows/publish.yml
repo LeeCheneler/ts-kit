@@ -20,13 +20,11 @@ jobs:
 
       - name: Lint
         run: yarn lint
-
-      - name: Configure NPM for Publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-
-      - name: Publish
-        run: |
-          npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
-          npm publish --tag commit
+      # - name: Configure NPM for Publish
+      #   env:
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      # - name: Publish
+      #   run: |
+      #     npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
+      #     npm publish --tag commit

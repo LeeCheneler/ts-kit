@@ -52,5 +52,10 @@ export const run = async (): Promise<void> => {
   }
 
   // Run the command
-  return command.run(args);
+  try {
+    await command.run(args);
+  } catch (error) {
+    printError(error);
+    return Promise.reject();
+  }
 };
