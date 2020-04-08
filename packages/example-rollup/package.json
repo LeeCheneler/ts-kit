@@ -10,6 +10,6 @@
     "typecheck": "ts-kit typecheck"
   },
   "devDependencies": {
-    "@northops/ts-kit": "1.0.0"
+    "@leecheneler/ts-kit": "1.0.0"
   }
 }

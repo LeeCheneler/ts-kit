@@ -1,9 +1,9 @@
 {
-  "name": "@northops/ts-kit",
+  "name": "@leecheneler/ts-kit",
   "version": "1.0.0",
   "description": "Zero config CLI for writing TypeScript packages.",
   "repository": {
-    "url": "https://github.com/northops/ts-kit"
+    "url": "https://github.com/leecheneler/ts-kit"
   },
   "license": "MIT",
   "bin": {

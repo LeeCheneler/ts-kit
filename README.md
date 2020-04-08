@@ -1,4 +1,4 @@
-# NorthOps TypeScript Kit
+# TypeScript Kit
 
 Zero config CLI for writing TypeScript packages.
 
@@ -7,9 +7,9 @@ Zero config CLI for writing TypeScript packages.
 Install the package...
 
 ```sh
-yarn add --dev @northops/ts-kit
+yarn add --dev @leecheneler/ts-kit
 # or
-npm i @northops/ts-kit -D
+npm i @leecheneler/ts-kit -D
 ```
 
 ... and make sure the entry file exists at `src/main.ts`
