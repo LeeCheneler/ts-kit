@@ -7,7 +7,12 @@ const [, , ...args] = process.argv;
 
 const result = spawnSync(
   require.resolve("ts-node").replace("index", "bin-script"),
-  [path.resolve(__dirname, "cli.ts"), ...args],
+  [
+    "--project",
+    path.resolve(__dirname, "../tsconfig.json"),
+    path.resolve(__dirname, "cli.ts"),
+    ...args,
+  ],
   { stdio: "inherit" }
 );
 
