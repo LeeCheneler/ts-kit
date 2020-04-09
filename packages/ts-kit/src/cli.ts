@@ -7,7 +7,7 @@ import { lint } from "./commands/lint";
 import { test } from "./commands/_test";
 import { typecheck } from "./commands/typecheck";
 
-export const run = async (): Promise<void> => {
+const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
   const toolPackage = await getToolPackage();
   const commands: Command<unknown>[] = [build, lint, test, typecheck];
@@ -59,3 +59,8 @@ export const run = async (): Promise<void> => {
     return Promise.reject();
   }
 };
+
+// Run immediately
+run()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));
