@@ -1,3 +1,5 @@
+declare module "terminate";
+
 export interface Option<TValue> {
   name: string;
   description: string;
