@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import chalk from "chalk";
 import type { Command } from "./types";
 import { getToolPackage } from "./utils/package";
@@ -7,7 +9,7 @@ import { lint } from "./commands/lint";
 import { test } from "./commands/_test";
 import { typecheck } from "./commands/typecheck";
 
-export const run = async (): Promise<void> => {
+const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
   const toolPackage = await getToolPackage();
   const commands: Command<unknown>[] = [build, lint, test, typecheck];
@@ -52,5 +54,15 @@ export const run = async (): Promise<void> => {
   }
 
   // Run the command
-  return command.run(args);
+  try {
+    await command.run(args);
+  } catch (error) {
+    printError(error);
+    return Promise.reject();
+  }
 };
+
+// Run immediately
+run()
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));

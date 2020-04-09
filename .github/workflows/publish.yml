@@ -1,0 +1,46 @@
+name: Pipeline
+
+on: [push]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install
+        run: yarn
+
+      - name: Build
+        working-directory: packages/ts-kit
+        run: yarn build
+
+      # Binary needs to be relinked as it wasn't linked
+      # in initial install as files were not there
+      - name: Link Tool
+        working-directory: packages/ts-kit
+        run: rm -rf node_modules && yarn
+
+      - name: Typecheck
+        working-directory: packages/ts-kit
+        run: yarn typecheck
+
+      - name: Test
+        working-directory: packages/ts-kit
+        run: yarn test
+
+      - name: Lint
+        working-directory: packages/ts-kit
+        run: yarn lint
+
+      - name: Configure NPM for Publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+
+      - name: Publish
+        working-directory: packages/ts-kit
+        run: |
+          npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
+          npm publish --tag commit --access public

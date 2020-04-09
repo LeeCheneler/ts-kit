@@ -1,5 +1,5 @@
-import { runTsKit } from "./utils/run";
-import { getToolPackage } from "../src/utils/package";
+import { runTsKit } from "./test-utils/run";
+import { getToolPackage } from "../utils/package";
 
 describe("help option", () => {
   it("should print basic tool info", async () => {
@@ -21,6 +21,4 @@ describe("help option", () => {
     expect(result.stdoutLines).toContain("--version");
     expect(result.stdoutLines).toContain("Print version.");
   });
-
-  it.skip(`should print command info`, () => {});
 });

@@ -3,7 +3,7 @@ import stripAnsi from "strip-ansi";
 import terminate from "terminate";
 
 export interface RunTsKitResult {
-  status: number;
+  status: number | null;
   stderr: string;
   stderrLines: string[];
   stdout: string;
@@ -49,11 +49,11 @@ export const runTsKitAsync = (
   runner.stdout.setEncoding("utf8");
   runner.stderr.setEncoding("utf8");
 
-  const stdoutLines = [];
-  const stderrLines = [];
-  let resolveStdoutFound = null;
+  const stdoutLines: string[] = [];
+  const stderrLines: string[] = [];
+  let resolveStdoutFound: (() => void) | null = null;
   let stdoutToLookFor = "";
-  let resolveStderrFound = null;
+  let resolveStderrFound: (() => void) | null = null;
   let stderrToLookFor = "";
 
   runner.stdout.on("data", (data) => {
@@ -80,13 +80,13 @@ export const runTsKitAsync = (
     kill: () => terminate(runner.pid),
     getStdoutLines: () => stdoutLines,
     getStderrLines: () => stderrLines,
-    waitForStdout: (value) => {
+    waitForStdout: (value: string) => {
       stdoutToLookFor = value;
       return new Promise((resolve) => {
         resolveStdoutFound = resolve;
       });
     },
-    waitForStderr: (value) => {
+    waitForStderr: (value: string) => {
       stderrToLookFor = value;
       return new Promise((resolve) => {
         resolveStderrFound = resolve;

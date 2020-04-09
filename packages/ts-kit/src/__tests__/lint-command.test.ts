@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs-extra";
-import { runTsKit } from "./utils/run";
+import { runTsKit } from "./test-utils/run";
 import {
   createPackage,
   destroyPackage,
   getPackageDir,
-} from "./utils/generate-package";
+} from "./test-utils/generate-package";
 
 describe("lint command", () => {
   beforeEach(async () => {
@@ -43,7 +43,9 @@ describe("lint command", () => {
     expect(result.stderrLines).toContain(
       "Found 1 errors (0 fixable) and 0 warnings (0 fixable)"
     );
-    expect(result.stderrLines).toContain("Error (3:3) Unreachable code.");
+    expect(result.stderrLines).toContain(
+      "Error (3:3) Unreachable code. (no-unreachable)"
+    );
     expect(result.stderrLines).not.toContain(
       "Rerun with --fix to fix fixable issues"
     );
@@ -64,10 +66,10 @@ describe("lint command", () => {
       "Found 2 errors (2 fixable) and 0 warnings (0 fixable)"
     );
     expect(result.stderrLines).toContain(
-      "Error (1:1) Unexpected var, use let or const instead."
+      "Error (1:1) Unexpected var, use let or const instead. (no-var)"
     );
     expect(result.stderrLines).toContain(
-      "Error (1:11) Replace `·console.log(a)` with `⏎console.log(a);⏎`"
+      "Error (1:11) Replace `·console.log(a)` with `⏎console.log(a);⏎` (prettier/prettier)"
     );
     expect(result.stderrLines).toContain(
       "Rerun with --fix to fix fixable issues"

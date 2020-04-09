@@ -1,10 +1,19 @@
 #!/usr/bin/env node
+const { spawnSync } = require("child_process");
+const path = require("path");
 
-require("ts-node").register(require("../tsconfig.json"));
+// Args to forward onto the ts-kit process
+const [, , ...args] = process.argv;
 
-const cli = require("./cli");
+const result = spawnSync(
+  require.resolve("ts-node").replace("index", "bin-script"),
+  [
+    "--project",
+    path.resolve(__dirname, "../tsconfig.json"),
+    path.resolve(__dirname, "cli.ts"),
+    ...args,
+  ],
+  { stdio: "inherit" }
+);
 
-cli
-  .run()
-  .then(() => process.exit(0))
-  .catch(() => process.exit(1));
+process.exit(result.status);

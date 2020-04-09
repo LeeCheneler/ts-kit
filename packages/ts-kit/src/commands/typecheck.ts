@@ -19,6 +19,7 @@ const createConfig = (
     skipLibCheck: true,
     strict: true,
     outDir: "dist",
+    allowJs: true,
     ...mergeConfig,
   };
 };
@@ -38,7 +39,7 @@ export interface TypecheckCommandOptions {
 
 export const typecheck: Command<TypecheckCommandOptions> = {
   name: "typecheck",
-  description: `Typecheck code with ${chalk.blueBright("TypeSCript")}`,
+  description: `Typecheck code with ${chalk.blueBright("TypeScript")}`,
   options,
   run: async (args: string[]) => {
     const parsedOptions = argsToOptions<TypecheckCommandOptions>(args, options);
@@ -50,7 +51,7 @@ export const typecheck: Command<TypecheckCommandOptions> = {
     // Setup TypeScript compiler
     const consumerPackage = await getConsumerPackage();
     let program = ts.createProgram(
-      await consumerPackage.srcFilepaths,
+      consumerPackage.srcFilepaths.filter((f) => !f.includes("__tests__")),
       createConfig({
         emitDeclarationOnly: parsedOptions.emit,
         noEmit: !parsedOptions.emit,

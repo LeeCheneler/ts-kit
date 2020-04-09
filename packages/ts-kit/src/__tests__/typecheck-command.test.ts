@@ -1,19 +1,19 @@
 import path from "path";
 import fs from "fs-extra";
-import { runTsKit } from "./utils/run";
+import { runTsKit } from "./test-utils/run";
 import {
   createPackage,
   destroyPackage,
   getPackageDir,
-} from "./utils/generate-package";
+} from "./test-utils/generate-package";
 
 describe("build command", () => {
   beforeEach(async () => {
-    // await destroyPackage("@temp/typecheck-command");
+    await destroyPackage("@temp/typecheck-command");
   });
 
   afterAll(async () => {
-    // await destroyPackage("@temp/typecheck-command");
+    await destroyPackage("@temp/typecheck-command");
   });
 
   it("typechecks code", async () => {

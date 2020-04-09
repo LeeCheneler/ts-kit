@@ -1,9 +1,9 @@
-import { runTsKit } from "./utils/run";
+import { runTsKit } from "./test-utils/run";
 import {
   createPackage,
   destroyPackage,
   getPackageDir,
-} from "./utils/generate-package";
+} from "./test-utils/generate-package";
 
 describe("test command", () => {
   beforeEach(async () => {

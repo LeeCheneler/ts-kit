@@ -4,6 +4,7 @@ import { print } from "../utils/print";
 
 const createConfig = () => {
   return {
+    testRegex: "/__tests__/.*.test.(js|jsx|ts|tsx)$",
     testURL: "http://localhost",
     transform: {
       ".(js|jsx|ts|tsx)$": require.resolve("../tool-files/jestPreprocessor"),

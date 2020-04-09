@@ -1,4 +1,4 @@
-import { runTsKit } from "./utils/run";
+import { runTsKit } from "./test-utils/run";
 
 describe("unknown command", () => {
   it("exits with status 1 on unknown command", () => {
