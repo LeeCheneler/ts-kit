@@ -16,6 +16,8 @@ jobs:
         working-directory: packages/ts-kit
         run: yarn build
 
+      # Binary needs to be relinked as it wasn't linked
+      # in initial install as files were not there
       - name: Link Tool
         working-directory: packages/ts-kit
         run: rm -rf node_modules && yarn
