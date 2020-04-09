@@ -1,5 +1,7 @@
 # TypeScript Kit
 
+![Pipeline](https://github.com/LeeCheneler/ts-kit/workflows/Pipeline/badge.svg)
+
 Zero config CLI for writing TypeScript packages.
 
 # Getting Started
