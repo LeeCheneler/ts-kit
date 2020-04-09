@@ -14,7 +14,7 @@ describe("test command", () => {
     await destroyPackage("@temp/test-command");
   });
 
-  it.only("runs jest", async () => {
+  it("runs jest", async () => {
     await createPackage({
       name: "@temp/test-command",
       testSuite: true,

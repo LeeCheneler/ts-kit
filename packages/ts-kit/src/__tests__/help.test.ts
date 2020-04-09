@@ -21,6 +21,4 @@ describe("help option", () => {
     expect(result.stdoutLines).toContain("--version");
     expect(result.stdoutLines).toContain("Print version.");
   });
-
-  it.skip(`should print command info`, () => {});
 });

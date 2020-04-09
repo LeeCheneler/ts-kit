@@ -9,11 +9,11 @@ import {
 
 describe("build command", () => {
   beforeEach(async () => {
-    // await destroyPackage("@temp/typecheck-command");
+    await destroyPackage("@temp/typecheck-command");
   });
 
   afterAll(async () => {
-    // await destroyPackage("@temp/typecheck-command");
+    await destroyPackage("@temp/typecheck-command");
   });
 
   it("typechecks code", async () => {

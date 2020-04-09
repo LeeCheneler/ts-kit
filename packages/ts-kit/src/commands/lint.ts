@@ -164,6 +164,7 @@ export const lint: Command<LintCommandOptions> = {
       printError();
     }
 
-    return Promise.reject();
+    // Don't fail if we only have warnings
+    return report.errorCount > 0 ? Promise.reject() : Promise.resolve();
   },
 };
