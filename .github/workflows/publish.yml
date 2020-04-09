@@ -16,6 +16,10 @@ jobs:
         working-directory: packages/ts-kit
         run: yarn build
 
+      - name: Link Tool
+        working-directory: packages/ts-kit
+        run: rm -rf node_modules && yarn
+
       - name: Typecheck
         working-directory: packages/ts-kit
         run: yarn typecheck
