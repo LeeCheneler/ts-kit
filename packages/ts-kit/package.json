@@ -7,9 +7,10 @@
   },
   "license": "MIT",
   "bin": {
-    "ts-kit": "./src/bin.js"
+    "ts-kit": "./dist/cli.js"
   },
   "scripts": {
+    "build": "tsc && cp -R src/tool-files dist",
     "lint": "ts-kit lint",
     "test": "ts-kit test --runInBand --testTimeout=20000",
     "typecheck": "ts-kit typecheck"

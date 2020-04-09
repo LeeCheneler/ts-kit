@@ -1,5 +1,5 @@
-import { runTsKit } from "./utils/run";
-import { getToolPackage } from "../src/utils/package";
+import { runTsKit } from "./test-utils/run";
+import { getToolPackage } from "../utils/package";
 
 describe("help option", () => {
   it("should print basic tool info", async () => {

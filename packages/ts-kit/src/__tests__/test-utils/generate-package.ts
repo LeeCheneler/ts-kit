@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs-extra";
 import { spawnSync } from "child_process";
-import { getToolPackage } from "../../src/utils/package";
+import { getToolPackage } from "../../utils/package";
 
 export interface CreatePackageOptions {
   name: string;
@@ -63,8 +63,9 @@ export const createPackage = async (
 
   if (finalOptions.testSuite) {
     // Write test file
+    await fs.ensureDir(path.resolve(packageDir, "src/__tests__"));
     await fs.writeFile(
-      path.resolve(packageDir, "src/example.test.ts"),
+      path.resolve(packageDir, "src/__tests__/example.test.ts"),
       "it('should pass', () => { expect(1 + 2).toBe(3) });"
     );
   }

@@ -12,6 +12,10 @@ jobs:
       - name: Install
         run: yarn
 
+      - name: Build
+        working-directory: packages/ts-kit
+        run: yarn build
+
       - name: Typecheck
         working-directory: packages/ts-kit
         run: yarn typecheck

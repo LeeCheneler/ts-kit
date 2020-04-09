@@ -1,9 +1,9 @@
-import { runTsKit } from "./utils/run";
+import { runTsKit } from "./test-utils/run";
 import {
   createPackage,
   destroyPackage,
   getPackageDir,
-} from "./utils/generate-package";
+} from "./test-utils/generate-package";
 
 describe("test command", () => {
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe("test command", () => {
     await destroyPackage("@temp/test-command");
   });
 
-  it("runs jest", async () => {
+  it.only("runs jest", async () => {
     await createPackage({
       name: "@temp/test-command",
       testSuite: true,

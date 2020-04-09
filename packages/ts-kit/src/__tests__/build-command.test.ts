@@ -1,11 +1,11 @@
 import path from "path";
 import fs from "fs-extra";
-import { runTsKit, runTsKitAsync } from "./utils/run";
+import { runTsKit, runTsKitAsync } from "./test-utils/run";
 import {
   createPackage,
   destroyPackage,
   getPackageDir,
-} from "./utils/generate-package";
+} from "./test-utils/generate-package";
 
 describe("build command", () => {
   beforeEach(async () => {
