@@ -1,82 +1,89 @@
-import path from "path";
-import fs from "fs-extra";
-import { runTsKit, runTsKitAsync } from "./test-utils/run";
-import {
-  createPackage,
-  destroyPackage,
-  getPackageDir,
-} from "./test-utils/generate-package";
+import "./test-utils/extend-expect";
+import { runCliCommand } from "./test-utils/run-cli-command";
+import { createMockPackage, MockPackage } from "./test-utils/mock-package";
 
 describe("build command", () => {
+  let mockPackage: MockPackage;
+
   beforeEach(async () => {
-    await destroyPackage("@temp/build-command");
+    if (mockPackage) {
+      await mockPackage.cleanup();
+    }
   });
 
   afterAll(async () => {
-    await destroyPackage("@temp/build-command");
+    await mockPackage.cleanup();
   });
 
   it("builds code", async () => {
-    const packageDir = await getPackageDir("@temp/build-command");
-    await createPackage({
-      name: "@temp/build-command",
-      mainSrc: true,
-    });
-    const result = runTsKit("build", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/build-command");
+    await mockPackage.writeFile("src/main.ts", `console.log("Hello world");`);
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit build", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain("Building code with Rollup");
-    expect(result.stdoutLines).toContain("src/main.ts ⮕  dist/main.js");
-    expect(
-      fs.readFileSync(path.resolve(packageDir, "dist/main.js"), {
-        encoding: "utf8",
-      })
-    ).toBe(`"use strict";console.log("Hello world");
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Building code with Rollup",
+      "src/main.ts ⮕  dist/main.js",
+    ]);
+
+    // Expect file to be written
+    const builtFileContent = await mockPackage.readFile("dist/main.js");
+    expect(builtFileContent).toBe(`"use strict";console.log("Hello world");
 `);
   });
 
   it("watches for code changes and rebuilds when --watch is present", async () => {
-    const packageDir = await getPackageDir("@temp/build-command");
-    await createPackage({
-      name: "@temp/build-command",
-      mainSrc: true,
-    });
-    const runner = runTsKitAsync("build --watch", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/build-command");
+    await mockPackage.writeFile("src/main.ts", `console.log("Hello world");`);
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit build --watch", {
+      cwd: mockPackage.dir,
     });
 
-    // Check it is initially built
-    await runner.waitForStdout("Watching for changes...");
-    const firstStdoutLines = runner.getStdoutLines();
-    expect(firstStdoutLines).toContain("Building code with Rollup");
-    expect(firstStdoutLines).toContain("src/main.ts ⮕  dist/main.js");
-    expect(firstStdoutLines).toContain("Watching for changes...");
-    expect(
-      fs.readFileSync(path.resolve(packageDir, "dist/main.js"), {
-        encoding: "utf8",
-      })
-    ).toBe(`"use strict";console.log("Hello world");
+    // Wait until its watching
+    await runner.waitUntilStdoutLine("Watching for changes...");
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Building code with Rollup",
+      "src/main.ts ⮕  dist/main.js",
+      "Watching for changes...",
+    ]);
+
+    // Expect file to be written
+    const builtFileContent = await mockPackage.readFile("dist/main.js");
+    expect(builtFileContent).toBe(`"use strict";console.log("Hello world");
 `);
 
-    // Make a change and check it is updated
-    fs.writeFileSync(
-      path.resolve(packageDir, "src/main.ts"),
-      "console.log('Hello world edited');",
-      { encoding: "utf8" }
-    );
-    await runner.waitForStdout("Watching for changes...");
-    const secondStdoutLines = runner
-      .getStdoutLines()
-      .slice(firstStdoutLines.indexOf("Watching for changes...") + 1);
-    expect(secondStdoutLines).toContain("src/main.ts ⮕  dist/main.js");
-    expect(secondStdoutLines).toContain("Watching for changes...");
-    expect(
-      fs.readFileSync(path.resolve(packageDir, "dist/main.js"), {
-        encoding: "utf8",
-      })
-    ).toBe(`"use strict";console.log("Hello world edited");
+    // Update file
+    await mockPackage.writeFile("src/main.ts", `console.log("Goodbye world");`);
+
+    // Wait until its watching again
+    await runner.waitUntilStdoutLine("Watching for changes...");
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Building code with Rollup",
+      "src/main.ts ⮕  dist/main.js",
+      "Watching for changes...",
+      "src/main.ts ⮕  dist/main.js",
+      "Watching for changes...",
+    ]);
+
+    // Expect file to be written
+    const newBuildFileContent = await mockPackage.readFile("dist/main.js");
+    expect(newBuildFileContent).toBe(`"use strict";console.log("Goodbye world");
 `);
 
     await runner.kill();

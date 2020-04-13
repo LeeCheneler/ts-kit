@@ -10,10 +10,10 @@
     "ts-kit": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc && cp -R src/tool-files dist",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist",
     "lint": "ts-kit lint",
     "test": "ts-kit test --runInBand --testTimeout=20000",
-    "typecheck": "ts-kit typecheck"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@babel/cli": "^7.8.4",

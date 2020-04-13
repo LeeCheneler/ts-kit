@@ -1,57 +1,72 @@
-import { runTsKit } from "./test-utils/run";
-import {
-  createPackage,
-  destroyPackage,
-  getPackageDir,
-} from "./test-utils/generate-package";
+import "./test-utils/extend-expect";
+import { runCliCommand } from "./test-utils/run-cli-command";
+import { createMockPackage, MockPackage } from "./test-utils/mock-package";
 
 describe("test command", () => {
+  let mockPackage: MockPackage;
+
   beforeEach(async () => {
-    await destroyPackage("@temp/test-command");
+    if (mockPackage) {
+      await mockPackage.cleanup();
+    }
   });
 
   afterAll(async () => {
-    await destroyPackage("@temp/test-command");
+    await mockPackage.cleanup();
   });
 
   it("runs jest", async () => {
-    await createPackage({
-      name: "@temp/test-command",
-      testSuite: true,
-    });
-    const result = runTsKit("test", {
-      cwd: await getPackageDir("@temp/test-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/test-command");
+    mockPackage.writeFile(
+      "src/__tests__/main.test.ts",
+      "it('should pass', () => { expect(1 + 2).toBe(3) });"
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit test", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain("Running tests with Jest");
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder(["Running tests with Jest"]);
 
     // Jest outputs everything to stderr, always has for some reason
-    expect(result.stderrLines).toContain("Test Suites: 1 passed, 1 total");
-    expect(result.stderrLines).toContain("Ran all test suites.");
+    expect(runner.stderrLines).toContainInOrder([
+      "Test Suites: 1 passed, 1 total",
+      "Ran all test suites.",
+    ]);
   });
 
   it("forwards args onto jest", async () => {
-    await createPackage({
-      name: "@temp/test-command",
-      testSuite: false,
-    });
-    const result = runTsKit("test --passWithNoTests", {
-      cwd: await getPackageDir("@temp/test-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/test-command");
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit test --passWithNoTests", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
   });
 
   it("forwards jest's status code", async () => {
-    await createPackage({
-      name: "@temp/test-command",
-      testSuite: false,
-    });
-    const result = runTsKit("test", {
-      cwd: await getPackageDir("@temp/test-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/test-command");
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit test", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(1);
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(1);
   });
 });
