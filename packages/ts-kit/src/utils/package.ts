@@ -1,5 +1,10 @@
 import path from "path";
 import glob from "glob-promise";
+import { getTsKitConfig } from "../config/ts-kit-config";
+
+const tsKitConfig = getTsKitConfig();
+const extensions = tsKitConfig.extensions.join(",");
+const srcGlob = `${tsKitConfig.srcDir}/**/*.{${extensions}}`;
 
 export interface PackageJson {
   name: string;
@@ -16,7 +21,6 @@ export interface PackageJson {
 export interface Package {
   dir: string;
   json: PackageJson;
-  srcDir: string;
   srcFilepaths: string[];
 }
 
@@ -26,8 +30,7 @@ export const getToolPackage = (): Package => {
   return {
     dir,
     json: require(path.resolve(dir, "package.json")) as PackageJson,
-    srcDir: path.resolve(dir, "src"),
-    srcFilepaths: glob.sync("src/**/*.{js,jsx,ts,tsx}", {
+    srcFilepaths: glob.sync(srcGlob, {
       root: path.resolve(dir),
     }),
   };
@@ -39,8 +42,7 @@ export const getConsumerPackage = (): Package => {
   return {
     dir,
     json: require(path.resolve(dir, "package.json")) as PackageJson,
-    srcDir: path.resolve(dir, "src"),
-    srcFilepaths: glob.sync("src/**/*.{js,jsx,ts,tsx}", {
+    srcFilepaths: glob.sync(srcGlob, {
       root: path.resolve(dir),
     }),
   };

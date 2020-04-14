@@ -6,6 +6,9 @@ import type { Command } from "../types";
 import { print, printError } from "../utils/print";
 import { createBooleanOption, argsToOptions } from "../utils/options";
 import { getConsumerPackage } from "../utils/package";
+import { getTsKitConfig } from "../config/ts-kit-config";
+
+const tsKitConfig = getTsKitConfig();
 
 const createConfig = () => {
   return {
@@ -51,16 +54,7 @@ const createConfig = () => {
     settings: {
       "import/resolver": {
         node: {
-          extensions: [
-            ".js",
-            ".jsx",
-            ".ts",
-            ".tsx",
-            ".json",
-            ".es6",
-            ".mjs",
-            ".cjs",
-          ],
+          extensions: tsKitConfig.extensions.map((x) => `.${x}`),
         },
       },
     },

@@ -4,6 +4,9 @@ import type { Command } from "../types";
 import { print, printError } from "../utils/print";
 import { createBooleanOption, argsToOptions } from "../utils/options";
 import { getConsumerPackage } from "../utils/package";
+import { getTsKitConfig } from "../config/ts-kit-config";
+
+const tsKitConfig = getTsKitConfig();
 
 const createConfig = (
   mergeConfig: Partial<ts.CompilerOptions>
@@ -18,7 +21,7 @@ const createConfig = (
     resolveJsonModule: true,
     skipLibCheck: true,
     strict: true,
-    outDir: "dist",
+    outDir: tsKitConfig.outputDir,
     allowJs: true,
     ...mergeConfig,
   };
@@ -60,7 +63,11 @@ export const typecheck: Command<TypecheckCommandOptions> = {
 
     if (parsedOptions.emit) {
       // Notify where types will be written to
-      print(`Writing type definitions to ${chalk.greenBright("dist/")}`);
+      print(
+        `Writing type definitions to ${chalk.greenBright(
+          tsKitConfig.outputDir
+        )}`
+      );
       print();
     }
 
