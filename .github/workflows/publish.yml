@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Install
         run: yarn
@@ -39,8 +39,14 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 
-      - name: Publish
+      - name: Publish (ts-kit)
         working-directory: packages/ts-kit
+        run: |
+          npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
+          npm publish --tag commit --access public
+
+      - name: Publish (eslint-config-ts-kit)
+        working-directory: packages/eslint-config-ts-kit
         run: |
           npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
           npm publish --tag commit --access public

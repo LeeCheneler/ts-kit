@@ -26,7 +26,7 @@ const containsInOrder = (received: string[], expected: string[]) => {
 
     // Update
     lastOccuranceMap[e] = adjustedIndex;
-    lastIndex = index;
+    lastIndex = adjustedIndex;
   }
 
   return true;

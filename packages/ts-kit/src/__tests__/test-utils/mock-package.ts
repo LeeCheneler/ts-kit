@@ -2,6 +2,9 @@ import { spawnSync } from "child_process";
 import path from "path";
 import fs from "fs-extra";
 import { getToolPackage } from "../../utils/package";
+import { getTsKitConfig } from "../../config/ts-kit";
+
+const tsKitConfig = getTsKitConfig();
 
 export interface MockPackage {
   dir: string;
@@ -13,8 +16,8 @@ export interface MockPackage {
 export const createMockPackage = async (name: string): Promise<MockPackage> => {
   // Create directories
   const packageDir = path.resolve(getToolPackage().dir, "..", name);
-  await fs.ensureDir(path.resolve(packageDir, "src"));
-  await fs.ensureDir(path.resolve(packageDir, "src/__tests__"));
+  await fs.ensureDir(path.resolve(packageDir, tsKitConfig.srcDir));
+  await fs.ensureDir(path.resolve(packageDir, tsKitConfig.srcDir, "__tests__"));
 
   // Write package.json file
   const toolPackageJson = getToolPackage().json;

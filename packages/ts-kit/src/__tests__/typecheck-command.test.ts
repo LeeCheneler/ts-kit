@@ -87,7 +87,7 @@ describe("build command", () => {
     // Expect correct output
     expect(runner.stdoutLines).toContainInOrder([
       "Typechecking code with TypeScript",
-      "Writing type definitions to dist/",
+      "Writing type definitions to dist",
       "No issues found",
     ]);
 

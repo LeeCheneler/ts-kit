@@ -9,23 +9,27 @@ import type { Command } from "../types";
 import { print, printError } from "../utils/print";
 import { getConsumerPackage } from "../utils/package";
 import { createBooleanOption, argsToOptions } from "../utils/options";
+import { getTsKitConfig } from "../config/ts-kit";
+
+const tsKitConfig = getTsKitConfig();
+const extensions = tsKitConfig.extensions.map((x) => `.${x}`);
 
 const createConfig = async () => {
   return {
-    input: "src/main.ts",
+    input: tsKitConfig.entryFilename,
     output: {
-      file: "dist/main.js",
+      file: tsKitConfig.outputFilename,
       format: "cjs",
     },
     plugins: [
       json(),
       commonjs(),
       resolve({
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions,
       }),
       babel({
         exclude: "node_modules/**",
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
+        extensions,
         configFile: require.resolve("../tool-files/babel.config.js"),
       }),
       terser(),
