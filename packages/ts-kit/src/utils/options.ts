@@ -43,3 +43,13 @@ export const createBooleanOption = (
     parse: (value: string) => value !== "false",
   };
 };
+
+export interface CreateDummyOptionOptions {
+  name: string;
+  description: string;
+}
+export const createDummyOption = (options: CreateDummyOptionOptions) => {
+  return {
+    ...options,
+  };
+};

@@ -12,12 +12,21 @@ const createConfig = () => {
   };
 };
 
+const options = [
+  {
+    name: "<jest_options>",
+    description: `Accepts all ${chalk.blueBright(
+      "Jest"
+    )} options except --config`,
+  },
+];
+
 export interface TestCommandOptions {}
 
 export const test: Command<TestCommandOptions> = {
   name: "test",
   description: `Run tests using ${chalk.blueBright("Jest")}`,
-  options: [],
+  options,
   run: async (args: string[]) => {
     // Announce tool
     print(`Running tests with ${chalk.blueBright("Jest")}`);

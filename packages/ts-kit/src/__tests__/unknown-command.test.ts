@@ -5,7 +5,7 @@ describe("unknown command", () => {
   it("exits with status 1 on unknown command", async () => {
     const runner = runCliCommand("yarn run ts-kit unknown");
 
-    // Expect tool to exist with correct status code
+    // Expect tool to exit with correct status code
     const status = await runner.waitForStatusCode();
     expect(status).toBe(1);
 
