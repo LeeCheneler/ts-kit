@@ -9,7 +9,6 @@
   "bin": {
     "ts-kit": "./dist/cli.js"
   },
-  "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist && rm -rf node_modules && yarn",
     "lint": "ts-kit lint",
