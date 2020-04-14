@@ -34,23 +34,19 @@ jobs:
         working-directory: packages/ts-kit
         run: yarn lint
 
-  publish:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package: [ts-kit, ts-kit-config-eslint]
-
-    steps:
-      - uses: actions/checkout@v2
-
       - name: Configure NPM for Publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 
-      - name: Publish
-        working-directory: packages/${{ matrix.package }}
+      - name: Publish (ts-kit)
+        working-directory: packages/ts-kit
+        run: |
+          npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
+          npm publish --tag commit --access public
+
+      - name: Publish (ts-kit-config-eslint)
+        working-directory: packages/ts-kit-config-eslint
         run: |
           npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
           npm publish --tag commit --access public
