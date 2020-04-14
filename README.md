@@ -4,65 +4,9 @@
 
 Zero config CLI for writing TypeScript packages.
 
-# Getting Started
+# Packages
 
-Install the package...
-
-```sh
-yarn add --dev @leecheneler/ts-kit
-```
-
-... and make sure the entry file exists at `src/main.ts`
-
-```
-// src/main.ts
-
-console.log("Hello world!")
-```
-
-# Usage
-
-## Build
-
-Builds your code using [Rollup](https://rollupjs.org/).
-
-```sh
-# Single build
-ts-kit build
-
-# Build and watch for changes
-ts-kit build --watch
-```
-
-## Typecheck
-
-Type checks your code using [TypeScript](https://www.typescriptlang.org/).
-
-```sh
-# Check types only
-ts-kit typecheck
-
-# Check types and emit type declaration files
-ts-kit typecheck --emit
-```
-
-## Lint
-
-Lints your code using [ESLint](https://eslint.org/).
-
-```sh
-ts-kit lint
-ts-kit lint --fix
-```
-
-## Test
-
-Runs your unit tests using [Jest](https://jestjs.io/).
-
-```sh
-# Run tests once
-ts-kit test
-
-# All args EXCEPT for --config are forward onto jest
-ts-kit test <jest_cli_args>
-```
+|                                       |                                                                              |                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------- |
+| **@leecheneler/ts-kit**               | Core package providing the `ts-kit` CLI                                      | [README](./packages/ts-kit/README.md)               |
+| **@leecheneler/eslint-config-ts-kit** | Provides ESLint config if you want to extend it or allow your IDE to find it | [README](./packages/eslint-config-ts-kit/README.md) |
