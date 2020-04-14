@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noEmit": false,
+    "noEmit": true,
     "lib": ["ESNext"],
     "esModuleInterop": true,
     "resolveJsonModule": true,
