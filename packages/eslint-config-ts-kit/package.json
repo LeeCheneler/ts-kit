@@ -1,5 +1,5 @@
 {
-  "name": "@leecheneler/ts-kit-config-eslint",
+  "name": "@leecheneler/eslint-config-ts-kit",
   "version": "1.0.0",
   "description": "ESLint config for @leecheneler/ts-kit.",
   "repository": {

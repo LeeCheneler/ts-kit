@@ -6,7 +6,7 @@ import type { Command } from "../types";
 import { print, printError } from "../utils/print";
 import { createBooleanOption, argsToOptions } from "../utils/options";
 import { getConsumerPackage } from "../utils/package";
-import eslintConfig from "@leecheneler/ts-kit-config-eslint";
+import eslintConfig from "@leecheneler/eslint-config-ts-kit";
 
 const options = [
   createBooleanOption({

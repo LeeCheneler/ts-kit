@@ -45,8 +45,8 @@ jobs:
           npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
           npm publish --tag commit --access public
 
-      - name: Publish (ts-kit-config-eslint)
-        working-directory: packages/ts-kit-config-eslint
+      - name: Publish (eslint-config-ts-kit)
+        working-directory: packages/eslint-config-ts-kit
         run: |
           npm --no-git-tag-version version prerelease --preid=commit.$(git rev-parse --short HEAD)
           npm publish --tag commit --access public

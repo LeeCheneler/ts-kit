@@ -1,5 +1,5 @@
 {
-  "name": "example-package",
+  "name": "@examples/app",
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
@@ -12,6 +12,6 @@
   },
   "devDependencies": {
     "@leecheneler/ts-kit": "1.0.0",
-    "@leecheneler/ts-kit-config-eslint": "^1.0.0"
+    "@leecheneler/eslint-config-ts-kit": "^1.0.0"
   }
 }
