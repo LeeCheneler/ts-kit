@@ -3,7 +3,7 @@ name: Pipeline
 on: [push]
 
 jobs:
-  verify:
+  pipeline:
     runs-on: ubuntu-latest
 
     steps:
