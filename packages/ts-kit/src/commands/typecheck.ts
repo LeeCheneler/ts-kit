@@ -49,7 +49,7 @@ export const typecheck: Command<TypecheckCommandOptions> = {
     print();
 
     // Setup TypeScript compiler
-    const consumerPackage = await getConsumerPackage();
+    const consumerPackage = getConsumerPackage();
     let program = ts.createProgram(
       consumerPackage.srcFilepaths.filter((f) => !f.includes("__tests__")),
       createConfig({

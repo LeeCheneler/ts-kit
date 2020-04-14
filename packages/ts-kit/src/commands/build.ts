@@ -30,7 +30,7 @@ const createConfig = async () => {
       }),
       terser(),
     ],
-    external: (await getConsumerPackage()).json?.dependencies ?? [],
+    external: getConsumerPackage().json?.dependencies ?? [],
   };
 };
 

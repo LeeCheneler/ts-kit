@@ -20,27 +20,27 @@ export interface Package {
   srcFilepaths: string[];
 }
 
-export const getToolPackage = async (): Promise<Package> => {
+export const getToolPackage = (): Package => {
   const dir = path.resolve(__dirname, "../..");
 
   return {
     dir,
     json: require(path.resolve(dir, "package.json")) as PackageJson,
     srcDir: path.resolve(dir, "src"),
-    srcFilepaths: await glob("src/**/*.{js,jsx,ts,tsx}", {
+    srcFilepaths: glob.sync("src/**/*.{js,jsx,ts,tsx}", {
       root: path.resolve(dir),
     }),
   };
 };
 
-export const getConsumerPackage = async (): Promise<Package> => {
+export const getConsumerPackage = (): Package => {
   const dir = process.cwd();
 
   return {
     dir,
     json: require(path.resolve(dir, "package.json")) as PackageJson,
     srcDir: path.resolve(dir, "src"),
-    srcFilepaths: await glob("src/**/*.{js,jsx,ts,tsx}", {
+    srcFilepaths: glob.sync("src/**/*.{js,jsx,ts,tsx}", {
       root: path.resolve(dir),
     }),
   };

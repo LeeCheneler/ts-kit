@@ -10,10 +10,10 @@
     "ts-kit": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc && cp -R src/tool-files dist",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist",
     "lint": "ts-kit lint",
     "test": "ts-kit test --runInBand --testTimeout=20000",
-    "typecheck": "ts-kit typecheck"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@babel/cli": "^7.8.4",
@@ -50,7 +50,6 @@
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.3.0",
-    "strip-ansi": "^6.0.0",
     "terminate": "^2.1.2",
     "ts-node": "^8.8.2",
     "typescript": "^3.8.3"

@@ -1,3 +1,4 @@
+import path from "path";
 import fs from "fs-extra";
 import eslint from "eslint";
 import chalk from "chalk";
@@ -91,7 +92,7 @@ export const lint: Command<LintCommandOptions> = {
     print();
 
     // Setup linting engine
-    const consumerPackage = await getConsumerPackage();
+    const consumerPackage = getConsumerPackage();
     const cli = new eslint.CLIEngine({
       fix: parsedOptions.fix,
       useEslintrc: false,
@@ -140,7 +141,9 @@ export const lint: Command<LintCommandOptions> = {
     );
 
     for (let file of files) {
-      printError(chalk.greenBright(file.filePath));
+      printError(
+        chalk.greenBright(path.relative(consumerPackage.dir, file.filePath))
+      );
 
       for (let message of file.messages) {
         const prefix =

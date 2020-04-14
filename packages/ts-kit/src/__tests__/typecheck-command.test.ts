@@ -1,73 +1,100 @@
-import path from "path";
-import fs from "fs-extra";
-import { runTsKit } from "./test-utils/run";
-import {
-  createPackage,
-  destroyPackage,
-  getPackageDir,
-} from "./test-utils/generate-package";
+import "./test-utils/extend-expect";
+import { runCliCommand } from "./test-utils/run-cli-command";
+import { createMockPackage, MockPackage } from "./test-utils/mock-package";
 
 describe("build command", () => {
+  let mockPackage: MockPackage;
+
   beforeEach(async () => {
-    await destroyPackage("@temp/typecheck-command");
+    if (mockPackage) {
+      await mockPackage.cleanup();
+    }
   });
 
   afterAll(async () => {
-    await destroyPackage("@temp/typecheck-command");
+    await mockPackage.cleanup();
   });
 
   it("typechecks code", async () => {
-    const packageDir = await getPackageDir("@temp/typecheck-command");
-    await createPackage({
-      name: "@temp/typecheck-command",
-      validTypes: true,
-    });
-    const result = runTsKit("typecheck", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/typecheck-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      "export const add = (a: number, b: number): number => a + b;"
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit typecheck", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain("Typechecking code with TypeScript");
-    expect(result.stdoutLines).toContain("No issues found");
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Typechecking code with TypeScript",
+      "No issues found",
+    ]);
   });
 
   it("reports type errors", async () => {
-    const packageDir = await getPackageDir("@temp/typecheck-command");
-    await createPackage({
-      name: "@temp/typecheck-command",
-      invalidTypes: true,
-    });
-    const result = runTsKit("typecheck", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/typecheck-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      "export const add = (a: number, b: string): number => a + b;"
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit typecheck", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(1);
-    expect(result.stdoutLines).toContain("Typechecking code with TypeScript");
-    expect(result.stderrLines).toContain("Found 1 type errors:");
-    expect(result.stderrLines).toContain("src/valid-types.ts");
-    expect(result.stderrLines).toContain(
-      "(1,54): Type 'string' is not assignable to type 'number'."
-    );
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(1);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Typechecking code with TypeScript",
+    ]);
+    expect(runner.stderrLines).toContainInOrder([
+      "Found 1 type errors:",
+      "src/main.ts",
+      "(1,54): Type 'string' is not assignable to type 'number'.",
+    ]);
   });
 
   it("outputs type definitions", async () => {
-    const packageDir = await getPackageDir("@temp/typecheck-command");
-    await createPackage({
-      name: "@temp/typecheck-command",
-      validTypes: true,
-    });
-    const result = runTsKit("typecheck --emit", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/typecheck-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      "export const add = (a: number, b: number): number => a + b;"
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit typecheck --emit", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain("Typechecking code with TypeScript");
-    expect(result.stdoutLines).toContain("Writing type definitions to dist/");
-    expect(
-      fs.readFileSync(path.resolve(packageDir, "dist/valid-types.d.ts"), {
-        encoding: "utf8",
-      })
-    ).toBe(`export declare const add: (a: number, b: number) => number;
-`);
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Typechecking code with TypeScript",
+      "Writing type definitions to dist/",
+      "No issues found",
+    ]);
+
+    // Expect types to be written
+    const typeDefContents = await mockPackage.readFile("dist/main.d.ts");
+    expect(typeDefContents.trimEnd()).toBe(
+      "export declare const add: (a: number, b: number) => number;"
+    );
   });
 });

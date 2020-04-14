@@ -1,24 +1,22 @@
-import { runTsKit } from "./test-utils/run";
+import "./test-utils/extend-expect";
+import { runCliCommand } from "./test-utils/run-cli-command";
 import { getToolPackage } from "../utils/package";
 
 describe("help option", () => {
   it("should print basic tool info", async () => {
-    const toolPackage = await getToolPackage();
-    const result = runTsKit("--help");
+    const runner = runCliCommand("yarn run ts-kit --help");
 
-    expect(result.status).toBe(0);
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
 
-    // <name> (https://repoUrl)
-    expect(result.stdoutLines).toContain(
-      `${toolPackage.json.name} (${toolPackage.json.repository.url})`
-    );
-
-    // <tool_description>
-    expect(result.stdoutLines).toContain(toolPackage.json.description);
-
-    // --version
-    // Print version.
-    expect(result.stdoutLines).toContain("--version");
-    expect(result.stdoutLines).toContain("Print version.");
+    // Expect correct output
+    const toolPackage = getToolPackage();
+    expect(runner.stdoutLines).toContainInOrder([
+      `${toolPackage.json.name} (${toolPackage.json.repository.url})`,
+      toolPackage.json.description,
+      "--version",
+      "Print version.",
+    ]);
   });
 });

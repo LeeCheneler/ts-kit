@@ -11,7 +11,7 @@ import { typecheck } from "./commands/typecheck";
 
 const run = async (): Promise<void> => {
   const [, , commandName, ...args] = process.argv;
-  const toolPackage = await getToolPackage();
+  const toolPackage = getToolPackage();
   const commands: Command<unknown>[] = [build, lint, test, typecheck];
 
   if (commandName === "--version") {

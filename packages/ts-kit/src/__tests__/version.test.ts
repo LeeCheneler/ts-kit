@@ -1,12 +1,16 @@
-import { runTsKit } from "./test-utils/run";
+import { runCliCommand } from "./test-utils/run-cli-command";
 import { getToolPackage } from "../utils/package";
 
 describe("version option", () => {
   it(`should print version`, async () => {
-    const toolPackage = await getToolPackage();
-    const result = runTsKit("--version");
+    const runner = runCliCommand("yarn run ts-kit --version");
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain(toolPackage.json.version);
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect version to be logged
+    const toolPackage = getToolPackage();
+    expect(runner.stdoutLines).toContain(toolPackage.json.version);
   });
 });

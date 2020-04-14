@@ -1,97 +1,119 @@
-import path from "path";
-import fs from "fs-extra";
-import { runTsKit } from "./test-utils/run";
-import {
-  createPackage,
-  destroyPackage,
-  getPackageDir,
-} from "./test-utils/generate-package";
+import "./test-utils/extend-expect";
+import { runCliCommand } from "./test-utils/run-cli-command";
+import { createMockPackage, MockPackage } from "./test-utils/mock-package";
 
 describe("lint command", () => {
+  let mockPackage: MockPackage;
+
   beforeEach(async () => {
-    await destroyPackage("@temp/lint-command");
+    if (mockPackage) {
+      await mockPackage.cleanup();
+    }
   });
 
   afterAll(async () => {
-    await destroyPackage("@temp/lint-command");
+    await mockPackage.cleanup();
   });
 
   it("runs eslint", async () => {
-    await createPackage({
-      name: "@temp/lint-command",
-    });
-    const result = runTsKit("lint", {
-      cwd: await getPackageDir("@temp/lint-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(result.stdoutLines).toContain("Linting with ESLint");
-    expect(result.stdoutLines).toContain("No issues found");
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Linting with ESLint",
+      "No issues found",
+    ]);
   });
 
   it("lints unfixable issues and does not present auto fix option", async () => {
-    await createPackage({
-      name: "@temp/lint-command",
-      unfixableLinting: true,
-    });
-    const result = runTsKit("lint", {
-      cwd: await getPackageDir("@temp/lint-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      `export const fn = () => {
+  return;
+  console.log("hello world");
+};
+`
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(1);
-    expect(result.stdoutLines).toContain("Linting with ESLint");
-    expect(result.stderrLines).toContain(
-      "Found 1 errors (0 fixable) and 0 warnings (0 fixable)"
-    );
-    expect(result.stderrLines).toContain(
-      "Error (3:3) Unreachable code. (no-unreachable)"
-    );
-    expect(result.stderrLines).not.toContain(
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(1);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder(["Linting with ESLint"]);
+    expect(runner.stderrLines).toContainInOrder([
+      "Found 1 errors (0 fixable) and 0 warnings (0 fixable)",
+      "Error (3:3) Unreachable code. (no-unreachable)",
+    ]);
+    expect(runner.stderrLines).not.toContain(
       "Rerun with --fix to fix fixable issues"
     );
   });
 
   it("lints fixable issues and presents auto fix suggestion", async () => {
-    await createPackage({
-      name: "@temp/lint-command",
-      fixableLinting: true,
-    });
-    const result = runTsKit("lint", {
-      cwd: await getPackageDir("@temp/lint-command"),
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+    mockPackage.writeFile("src/main.ts", "var a = 1; console.log(a)");
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(1);
-    expect(result.stdoutLines).toContain("Linting with ESLint");
-    expect(result.stderrLines).toContain(
-      "Found 2 errors (2 fixable) and 0 warnings (0 fixable)"
-    );
-    expect(result.stderrLines).toContain(
-      "Error (1:1) Unexpected var, use let or const instead. (no-var)"
-    );
-    expect(result.stderrLines).toContain(
-      "Error (1:11) Replace `·console.log(a)` with `⏎console.log(a);⏎` (prettier/prettier)"
-    );
-    expect(result.stderrLines).toContain(
-      "Rerun with --fix to fix fixable issues"
-    );
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(1);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder(["Linting with ESLint"]);
+    expect(runner.stderrLines).toContainInOrder([
+      "Found 2 errors (2 fixable) and 0 warnings (0 fixable)",
+      "Error (1:1) Unexpected var, use let or const instead. (no-var)",
+      "Error (1:11) Replace `·console.log(a)` with `⏎console.log(a);⏎` (prettier/prettier)",
+      "Rerun with --fix to fix fixable issues",
+    ]);
   });
 
   it("fixes autofixable lint issues when --fix is present", async () => {
-    const packageDir = await getPackageDir("@temp/lint-command");
-    await createPackage({
-      name: "@temp/lint-command",
-      fixableLinting: true,
-    });
-    const result = runTsKit("lint --fix", {
-      cwd: packageDir,
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+    mockPackage.writeFile("src/main.ts", "var a = 1; console.log(a)");
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint --fix", {
+      cwd: mockPackage.dir,
     });
 
-    expect(result.status).toBe(0);
-    expect(
-      fs.readFileSync(path.resolve(packageDir, "src/fixable-linting.ts"), {
-        encoding: "utf8",
-      })
-    ).toBe(`let a = 1;
+    // Expect tool to exist with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Linting with ESLint",
+      "No issues found",
+    ]);
+
+    // Expect file to be fixed
+    const fixedFileContent = await mockPackage.readFile("src/main.ts");
+    expect(fixedFileContent).toBe(`let a = 1;
 console.log(a);
 `);
   });
