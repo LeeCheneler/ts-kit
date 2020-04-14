@@ -1,6 +1,6 @@
 import path from "path";
 import glob from "glob-promise";
-import { getTsKitConfig } from "../config/ts-kit-config";
+import { getTsKitConfig } from "../config/ts-kit";
 
 const tsKitConfig = getTsKitConfig();
 const extensions = tsKitConfig.extensions.join(",");

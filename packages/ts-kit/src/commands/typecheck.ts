@@ -4,7 +4,7 @@ import type { Command } from "../types";
 import { print, printError } from "../utils/print";
 import { createBooleanOption, argsToOptions } from "../utils/options";
 import { getConsumerPackage } from "../utils/package";
-import { getTsKitConfig } from "../config/ts-kit-config";
+import { getTsKitConfig } from "../config/ts-kit";
 
 const tsKitConfig = getTsKitConfig();
 

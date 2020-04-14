@@ -9,6 +9,7 @@
   "bin": {
     "ts-kit": "./dist/cli.js"
   },
+  "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist && rm -rf node_modules && yarn",
     "lint": "ts-kit lint",
@@ -23,6 +24,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
+    "@leecheneler/ts-kit-config-eslint": "^1.0.0",
     "@types/eslint": "^6.1.9",
     "@types/fs-extra": "^8.1.0",
     "@types/jest": "^25.1.4",

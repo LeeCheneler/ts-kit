@@ -2,7 +2,7 @@ import { spawnSync } from "child_process";
 import path from "path";
 import fs from "fs-extra";
 import { getToolPackage } from "../../utils/package";
-import { getTsKitConfig } from "../../config/ts-kit-config";
+import { getTsKitConfig } from "../../config/ts-kit";
 
 const tsKitConfig = getTsKitConfig();
 

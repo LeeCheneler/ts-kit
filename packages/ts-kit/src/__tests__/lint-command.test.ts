@@ -117,4 +117,72 @@ describe("lint command", () => {
 console.log(a);
 `);
   });
+
+  it("picks up .eslintrc.js file if there is one", async () => {
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      `export var a = 1;
+`
+    );
+    mockPackage.writeFile(
+      ".eslintrc.js",
+      `module.exports = {
+  rules: {
+    "no-var": "off",
+  }
+}
+`
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint", {
+      cwd: mockPackage.dir,
+    });
+
+    // Expect tool to exit with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Linting with ESLint",
+      "No issues found",
+    ]);
+  });
+
+  it("picks up .eslintrc file if there is one", async () => {
+    // Create mock package
+    mockPackage = await createMockPackage("@temp/lint-command");
+    mockPackage.writeFile(
+      "src/main.ts",
+      `export var a = 1;
+`
+    );
+    mockPackage.writeFile(
+      ".eslintrc",
+      `{
+  "rules": {
+    "no-var": "off"
+  }
+}
+`
+    );
+
+    // Run the tool
+    const runner = runCliCommand("yarn run ts-kit lint", {
+      cwd: mockPackage.dir,
+    });
+
+    // Expect tool to exit with correct status code
+    const status = await runner.waitForStatusCode();
+    expect(status).toBe(0);
+
+    // Expect correct output
+    expect(runner.stdoutLines).toContainInOrder([
+      "Linting with ESLint",
+      "No issues found",
+    ]);
+  });
 });
