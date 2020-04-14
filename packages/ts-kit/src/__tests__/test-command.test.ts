@@ -28,7 +28,7 @@ describe("test command", () => {
       cwd: mockPackage.dir,
     });
 
-    // Expect tool to exist with correct status code
+    // Expect tool to exit with correct status code
     const status = await runner.waitForStatusCode();
     expect(status).toBe(0);
 
@@ -51,7 +51,7 @@ describe("test command", () => {
       cwd: mockPackage.dir,
     });
 
-    // Expect tool to exist with correct status code
+    // Expect tool to exit with correct status code
     const status = await runner.waitForStatusCode();
     expect(status).toBe(0);
   });
@@ -65,7 +65,7 @@ describe("test command", () => {
       cwd: mockPackage.dir,
     });
 
-    // Expect tool to exist with correct status code
+    // Expect tool to exit with correct status code
     const status = await runner.waitForStatusCode();
     expect(status).toBe(1);
   });

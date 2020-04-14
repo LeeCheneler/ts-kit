@@ -49,7 +49,7 @@ export interface BuildCommandOptions {
 export const build: Command<BuildCommandOptions> = {
   name: "build",
   description: `Build code using ${chalk.blueBright("Rollup")}`,
-  options: [],
+  options,
   run: async (args: string[]) => {
     const parsedOptions = argsToOptions<BuildCommandOptions>(args, options);
 

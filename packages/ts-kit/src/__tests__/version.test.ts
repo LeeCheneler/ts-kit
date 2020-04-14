@@ -5,7 +5,7 @@ describe("version option", () => {
   it(`should print version`, async () => {
     const runner = runCliCommand("yarn run ts-kit --version");
 
-    // Expect tool to exist with correct status code
+    // Expect tool to exit with correct status code
     const status = await runner.waitForStatusCode();
     expect(status).toBe(0);
 

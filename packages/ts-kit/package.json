@@ -10,7 +10,7 @@
     "ts-kit": "./dist/cli.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -R src/tool-files dist && rm -rf node_modules && yarn",
     "lint": "ts-kit lint",
     "test": "ts-kit test --runInBand --testTimeout=20000",
     "typecheck": "tsc"

@@ -10,18 +10,18 @@ import { test } from "./commands/_test";
 import { typecheck } from "./commands/typecheck";
 
 const run = async (): Promise<void> => {
-  const [, , commandName, ...args] = process.argv;
+  const [, , commandArg, ...args] = process.argv;
   const toolPackage = getToolPackage();
   const commands: Command<unknown>[] = [build, lint, test, typecheck];
 
-  if (commandName === "--version") {
+  if (commandArg === "--version") {
     // Handle top level tool options
     print(toolPackage.json.version);
 
     return Promise.resolve();
   }
 
-  if (commandName == "--help") {
+  if (commandArg == "--help") {
     // Print out helpful infomation
     print(
       `${toolPackage.json.name} (${chalk.blueBright(
@@ -33,17 +33,34 @@ const run = async (): Promise<void> => {
     print(toolPackage.json.description);
     print();
 
-    print(chalk.bold("--version"));
-    print("Print version.");
+    const nameColumnWidth = 20;
+
+    const versionName = chalk.bold("--version".padEnd(nameColumnWidth));
+    const versionDesc = "Print version";
+    print(`${versionName}${versionDesc}`);
     print();
+
+    for (let command of commands) {
+      const commandName = chalk.bold(command.name.padEnd(nameColumnWidth));
+      const commandDesc = command.description;
+      print(`${commandName}${commandDesc}`);
+
+      for (let option of command.options) {
+        const optionName = `--${option.name}`.padEnd(nameColumnWidth);
+        const optionDesc = option.description;
+        print(`${optionName}${optionDesc}`);
+      }
+
+      print();
+    }
 
     return Promise.resolve();
   }
 
-  const command = commands.find((c) => c.name === commandName);
+  const command = commands.find((c) => c.name === commandArg);
   if (!command) {
     // Notify command doesn't exist via stderr logs
-    printError(`Command '${commandName}' does not exist`);
+    printError(`Command '${commandArg}' does not exist`);
     print();
 
     printError("Run 'ts-kit --help' to see available commands");

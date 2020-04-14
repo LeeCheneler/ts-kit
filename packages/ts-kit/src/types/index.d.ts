@@ -15,9 +15,14 @@ export interface Option<TValue> {
   parse: (option: string) => TValue;
 }
 
+export interface DummyOption {
+  name: string;
+  description: string;
+}
+
 export interface Command<TOptions> {
   name: string;
   description: string;
-  options: Option<unknown>[];
+  options: (Option<unknown> | DummyOption)[];
   run: (args: string[]) => Promise<void>;
 }
